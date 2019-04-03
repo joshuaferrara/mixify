@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC|Berkshire+Swash|Poppins');
+
+.jumbotron {
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.jumbotron, .card-body{
+    background: #577798;
+}
+.jumbotron h1 {
+    font-family: 'Berkshire Swash', cursive;
+    font-size: 4rem;
+}
+.jumbotron p {
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.5rem;
+}
+.album, .input-group{
+    background: #AA7C81;
+    font-family: 'Poppins', sans-serif;
+}
+header, footer, body{
+    background: #CBDDE3;
+}
+title, p, h1, .text-muted {
+    color: E7EBF0;
+}
