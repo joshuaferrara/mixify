@@ -9,3 +9,8 @@
 
 ## Description
 
+## Makes use of
+
+* jQuery
+* Boostrap
+* [TheCocktailDB](https://www.thecocktaildb.com/)

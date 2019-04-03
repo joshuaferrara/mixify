@@ -1,10 +1,6 @@
 class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
-
-        console.log(this.cocktailDb)
-        
-        this.filteredCocktails = this.cocktailDb.cocktails;
         /* 
             this.cocktailDb = {
                 cocktails: [
@@ -20,6 +16,8 @@ class Mixify {
             }
         */
 
+        this.filteredCocktails = this.cocktailDb.cocktails;
+
         this.initializeSearchBar();
         this.generateCards();
 
@@ -28,10 +26,6 @@ class Mixify {
 
     // Sets up the search bar tagging stuff
     initializeSearchBar() {
-        // TODO: Stacey - do search bar initialization here
-        // hook up the search bar to update this.filteredCocktails with
-        // the correct cocktails given the user's search terms.
-        
         var ingredientNames = new Bloodhound({
             local: this.cocktailDb.ingredients,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -45,6 +39,7 @@ class Mixify {
             }
         });
 
+        // TODO: listen for changes on input and filter out & rerender cards
     }
 
     // Generates list of cards
@@ -56,16 +51,17 @@ class Mixify {
         let outputHtml = `<div class="container"><div class="row">`;
         Object.keys(this.filteredCocktails).forEach((key) => {
             const cocktailData = this.filteredCocktails[key];
-            
+            let ingredientHtml = ``;
+            Object.keys(cocktailData.ingredients).forEach((key) => {
+                ingredientHtml += `<span class="badge badge-primary">${key}</span>`;
+            });            
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
               <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
                   <p class="card-text">${cocktailData.name} <span class="badge badge-success">Alcoholic</span></p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <span class="badge badge-primary">Primary</span>
-                    <span class="badge badge-primary">Primary</span>
-                    <span class="badge badge-primary">Primary</span>
+                  <div>
+                    ${ingredientHtml}
                   </div>
               </div>
             </div>
