@@ -16,7 +16,7 @@ class Mixify {
                 ]
             }
         */
-
+        
         this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
 
         this.initializeSearchBar();
@@ -45,15 +45,14 @@ class Mixify {
             event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
-        $('input').on('itemAdded', (event) => {
+        let tagInputChangeEventHandler = (event) => {
             this.filterCards();
+            this.sortCards();
             this.generateCards();
-        });
-        
-        $('input').on('itemRemoved', (event) => {
-            this.filterCards();
-            this.generateCards();
-        });
+        }
+
+        $('input').on('itemAdded', tagInputChangeEventHandler);
+        $('input').on('itemRemoved', tagInputChangeEventHandler);
     }
 
     get selectedIngredients() {
@@ -72,6 +71,17 @@ class Mixify {
                                                  Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
             });
         }
+    }
+
+    sortCards() {
+        // TODO: sort cards in decreasing order based upon
+        //       number of ingredients user has out of 
+        //       total number of ingredients for that drink
+        //       Also, sort the ingredients in each cocktail
+        //       so that ingredients we have are rendered b4
+        //       ingredients we don't have.
+
+        console.warn("TODO: sort the cards");
     }
 
     // Generates list of cards
