@@ -47,12 +47,11 @@
 }
 
 .bootstrap-tagsinput .badge {
-	margin-right: 2px;
-	color: white;
-	background-color: #0275d8;
-	padding: 5px 8px;
-	border-radius: 3px;
-	border: 1px solid #01649e
+  margin-right: 2px;
+  color: white;
+  background-color:#a34b4f;
+  padding:5px 8px;border-radius:3px;
+  border:1px solid #a34b4f;
 }
 
 .bootstrap-tagsinput .badge [data-role="remove"] {
@@ -102,54 +101,34 @@ span.twitter-typeahead .tt-menu {
 }
 
 span.twitter-typeahead .tt-suggestion {
-	display: block;
-	width: 100%;
-	padding: 3px 20px;
-	clear: both;
-	font-weight: normal;
-	line-height: 1.5;
-	color: #373a3c;
-	text-align: inherit;
-	white-space: nowrap;
-	background: none;
-	border: 0;
-}
-
-span.twitter-typeahead .tt-suggestion:focus,
-.dropdown-item:hover,
-span.twitter-typeahead .tt-suggestion:hover {
-	color: #2b2d2f;
-	text-decoration: none;
-	background-color: #f5f5f5;
-}
-
-span.twitter-typeahead .active.tt-suggestion,
-span.twitter-typeahead .tt-suggestion.tt-cursor,
-span.twitter-typeahead .active.tt-suggestion:focus,
-span.twitter-typeahead .tt-suggestion.tt-cursor:focus,
-span.twitter-typeahead .active.tt-suggestion:hover,
-span.twitter-typeahead .tt-suggestion.tt-cursor:hover {
-	color: #fff;
-	text-decoration: none;
-	background-color: #0275d8;
-	outline: 0;
-}
-
-span.twitter-typeahead .disabled.tt-suggestion,
-span.twitter-typeahead .disabled.tt-suggestion:focus,
-span.twitter-typeahead .disabled.tt-suggestion:hover {
-	color: #818a91;
-}
-
-span.twitter-typeahead .disabled.tt-suggestion:focus,
-span.twitter-typeahead .disabled.tt-suggestion:hover {
-	text-decoration: none;
-	cursor: not-allowed;
-	background-color: transparent;
-	background-image: none;
-	filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
-}
-
+  display: block;
+  width: 100%;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.5;
+  color: #373a3c;
+  text-align: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0; }
+span.twitter-typeahead .tt-suggestion:focus, .dropdown-item:hover, span.twitter-typeahead .tt-suggestion:hover {
+    color: #2b2d2f;
+    text-decoration: none;
+    background-color: #f5f5f5; }
+span.twitter-typeahead .active.tt-suggestion, span.twitter-typeahead .tt-suggestion.tt-cursor, span.twitter-typeahead .active.tt-suggestion:focus, span.twitter-typeahead .tt-suggestion.tt-cursor:focus, span.twitter-typeahead .active.tt-suggestion:hover, span.twitter-typeahead .tt-suggestion.tt-cursor:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #a34b4f;
+    outline: 0; }
+span.twitter-typeahead .disabled.tt-suggestion, span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
+    color: #818a91; }
+span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
+    text-decoration: none;
+    cursor: not-allowed;
+    background-color: transparent;
+    background-image: none;
+    filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)"; }
 span.twitter-typeahead {
   display: inline;
 }
