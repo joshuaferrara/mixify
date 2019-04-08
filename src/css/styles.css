@@ -27,6 +27,11 @@ white: #ffffff
     color: #1e1d30;
     font-size: 1.5rem;
 }
+.search-bar {
+    border-radius: 4rem;
+    background: #fff;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.15);
+}
 .input-group {
     font-family: 'Amatic SC', cursive;
     color: #1e1d30;
