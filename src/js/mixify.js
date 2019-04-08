@@ -105,6 +105,11 @@ class Mixify {
                 alcoholClass = "danger";
             }
 
+            // TODO: some cocktail objects don't have the `alcoholic`
+            //       property. For these cases, we might wanna set
+            //       the alcoholic property to a question mark or
+            //       something.
+
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
               <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
