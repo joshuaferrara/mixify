@@ -1,6 +1,7 @@
 class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
+        Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
                 cocktails: [
@@ -57,9 +58,13 @@ class Mixify {
 
     filterCards() {
         const selectedIngredients = this.searchIngredients.itemsArray;
-        this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
-            return selectedIngredients.some((ingredient) => Object.keys(cocktail.ingredients).includes(ingredient));
-        });
+        if (selectedIngredients.length == 0) {
+            this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
+        } else {
+            this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
+                return selectedIngredients.some((ingredient) => Object.keys(cocktail.ingredients).includes(ingredient));
+            });
+        }
     }
 
     // Generates list of cards
