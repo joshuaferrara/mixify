@@ -57,12 +57,14 @@ class Mixify {
     }
 
     filterCards() {
-        const selectedIngredients = this.searchIngredients.itemsArray;
+        const selectedIngredients = this.searchIngredients.itemsArray.map((ingr) => ingr.toLowerCase());
+        console.log(selectedIngredients)
         if (selectedIngredients.length == 0) {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
-                return selectedIngredients.some((ingredient) => Object.keys(cocktail.ingredients).includes(ingredient));
+                return selectedIngredients.some((ingredient) => 
+                                                 Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
             });
         }
     }
