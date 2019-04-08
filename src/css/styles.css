@@ -1,12 +1,22 @@
 @import url('https://fonts.googleapis.com/css?family=Amatic+SC|Berkshire+Swash|Poppins');
-
+/* Color Scheme:
+Dark Blue: #1e1d30
+electric blue: #353598
+faded red: #a34b4f
+pink: #ed7d77
+white: #ffffff
+*/
 .jumbotron {
     border-radius: 0;
     margin-bottom: 0;
+    background: #ed7d77;
 }
-
-.jumbotron, .card-body{
-    background: #577798;
+.card-body {
+    background: #353598;
+}
+.jumbotron img {
+    max-width: auto;
+    height: 50%;
 }
 .jumbotron h1 {
     font-family: 'Berkshire Swash', cursive;
@@ -14,15 +24,31 @@
 }
 .jumbotron p {
     font-family: 'Amatic SC', cursive;
+    color: #1e1d30;
     font-size: 1.5rem;
 }
-.album, .input-group{
-    background: #AA7C81;
+.input-group {
+    font-family: 'Amatic SC', cursive;
+    color: #1e1d30;
+    font-size: 1.5rem;
+}
+.album {
+    background: #1e1d30;
     font-family: 'Poppins', sans-serif;
 }
+.badge-primary {
+    background-color: #ed7d77;
+}
 header, footer, body{
-    background: #CBDDE3;
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+a {
+    color: #a34b4f;
+}
+a:hover {
+    color: #353598
 }
 title, p, h1, .text-muted {
-    color: E7EBF0;
+    color: #ffffff;
 }
