@@ -1,10 +1,11 @@
 class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
+        Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
                 cocktails: [
-                    {
+                    0: {
 
                     }
                 ],
@@ -15,13 +16,18 @@ class Mixify {
                 ]
             }
         */
+        
+        // TODO: Select random n-cocktails to display
+        //       when no search terms are provided.
+        this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
+        Object.freeze(this.defaultCocktails);
 
-        this.filteredCocktails = this.cocktailDb.cocktails;
+        this.filteredCocktails = this.defaultCocktails;
 
         this.initializeSearchBar();
         this.generateCards();
 
-        console.log(`Loaded Mixify with ${this.filteredCocktails.length} drinks.`);
+        console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
     }
 
     // Sets up the search bar tagging stuff
@@ -33,33 +39,83 @@ class Mixify {
         });
         ingredientNames.initialize();
 
-        $('input').tagsinput({
+        this.searchIngredients = $('input').tagsinput({
             typeaheadjs: {
               source: ingredientNames
             }
+        })[0];
+
+        $('input').on('beforeItemAdd', (event) => {
+            // Cancel the item add if the ingredient the user is trying to add
+            // does not exists in our ingredient database.
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
-        // TODO: listen for changes on input and filter out & rerender cards
+        let tagInputChangeEventHandler = () => {
+            this.filterCards();
+            this.sortCards();
+            this.generateCards();
+        }
+
+        $('input').on('itemAdded', tagInputChangeEventHandler);
+        $('input').on('itemRemoved', tagInputChangeEventHandler);
+    }
+
+    get selectedIngredients() {
+        return this.searchIngredients.itemsArray.map((ingr) => ingr.toLowerCase());
+    }
+
+    filterCards() {
+        const selectedIngredients = this.selectedIngredients;
+        if (selectedIngredients.length == 0) {
+            this.filteredCocktails = this.defaultCocktails;
+        } else {
+            this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
+                return selectedIngredients.some((ingredient) => 
+                                                 Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
+            });
+        }
+    }
+
+    sortCards() {
+        // TODO: sort cards in decreasing order based upon
+        //       number of ingredients user has out of 
+        //       total number of ingredients for that drink
+        //       Also, sort the ingredients in each cocktail
+        //       so that ingredients we have are rendered b4
+        //       ingredients we don't have.
+
+        console.warn("TODO: sort the cards");
     }
 
     // Generates list of cards
     generateCards() {
-        // TODO: Jonathan - generate HTML for all cards
-        // iterate through this.filteredCocktails to display cocktails
-        console.log(this.filteredCocktails);
-
         let outputHtml = `<div class="container"><div class="row">`;
-        Object.keys(this.filteredCocktails).forEach((key) => {
-            const cocktailData = this.filteredCocktails[key];
+        this.filteredCocktails.forEach((cocktailData) => {
             let ingredientHtml = ``;
             Object.keys(cocktailData.ingredients).forEach((key) => {
-                ingredientHtml += `<span class="badge badge-primary">${key}</span>`;
-            });            
+                let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
+
+                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
+            });
+
+            let alcoholClass = "success";
+            if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
+                alcoholClass = "warning";
+            } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Non') != -1) {
+                alcoholClass = "danger";
+            }
+
+            // TODO: some cocktail objects don't have the `alcoholic`
+            //       property. For these cases, we might wanna set
+            //       the alcoholic property to a question mark or
+            //       something.
+
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
-              <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+              <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-                  <p class="card-text">${cocktailData.name} <span class="badge badge-success">Alcoholic</span></p>
+                  <p class="card-text">${cocktailData.name} <span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span></p>
                   <div>
                     ${ingredientHtml}
                   </div>
@@ -69,8 +125,6 @@ class Mixify {
         });
         outputHtml += `</div></div>`;
         $("#cocktailAlbum").html(outputHtml);
-
-        //document.getElementsById("pracc").innerHTML = this.filteredCocktails[0].name;
     }
 }
 
