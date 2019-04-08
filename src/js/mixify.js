@@ -4,7 +4,7 @@ class Mixify {
         /* 
             this.cocktailDb = {
                 cocktails: [
-                    {
+                    0: {
 
                     }
                 ],
@@ -16,12 +16,12 @@ class Mixify {
             }
         */
 
-        this.filteredCocktails = this.cocktailDb.cocktails;
+        this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
 
         this.initializeSearchBar();
         this.generateCards();
 
-        console.log(`Loaded Mixify with ${this.filteredCocktails.length} drinks.`);
+        console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
     }
 
     // Sets up the search bar tagging stuff
@@ -33,24 +33,39 @@ class Mixify {
         });
         ingredientNames.initialize();
 
-        $('input').tagsinput({
+        this.searchIngredients = $('input').tagsinput({
             typeaheadjs: {
               source: ingredientNames
             }
+        })[0];
+
+        $('input').on('beforeItemAdd', (event) => {
+            // Only let users add items that are available through auto complete
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
-        // TODO: listen for changes on input and filter out & rerender cards
+        $('input').on('itemAdded', (event) => {
+            this.filterCards();
+            this.generateCards();
+        });
+        
+        $('input').on('itemRemoved', (event) => {
+            this.filterCards();
+            this.generateCards();
+        });
+    }
+
+    filterCards() {
+        const selectedIngredients = this.searchIngredients.itemsArray;
+        this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
+            return selectedIngredients.some((ingredient) => Object.keys(cocktail.ingredients).includes(ingredient));
+        });
     }
 
     // Generates list of cards
     generateCards() {
-        // TODO: Jonathan - generate HTML for all cards
-        // iterate through this.filteredCocktails to display cocktails
-        console.log(this.filteredCocktails);
-
         let outputHtml = `<div class="container"><div class="row">`;
-        Object.keys(this.filteredCocktails).forEach((key) => {
-            const cocktailData = this.filteredCocktails[key];
+        this.filteredCocktails.forEach((cocktailData) => {
             let ingredientHtml = ``;
             Object.keys(cocktailData.ingredients).forEach((key) => {
                 ingredientHtml += `<span class="badge badge-primary">${key}</span>`;
@@ -69,8 +84,6 @@ class Mixify {
         });
         outputHtml += `</div></div>`;
         $("#cocktailAlbum").html(outputHtml);
-
-        //document.getElementsById("pracc").innerHTML = this.filteredCocktails[0].name;
     }
 }
 
