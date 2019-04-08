@@ -57,7 +57,7 @@ class Mixify {
             });            
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
-              <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+              <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
                   <p class="card-text">${cocktailData.name} <span class="badge badge-success">Alcoholic</span></p>
                   <div>
