@@ -17,7 +17,12 @@ class Mixify {
             }
         */
         
-        this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
+        // TODO: Select random n-cocktails to display
+        //       when no search terms are provided.
+        this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
+        Object.freeze(this.defaultCocktails);
+
+        this.filteredCocktails = this.defaultCocktails;
 
         this.initializeSearchBar();
         this.generateCards();
@@ -45,7 +50,7 @@ class Mixify {
             event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
-        let tagInputChangeEventHandler = (event) => {
+        let tagInputChangeEventHandler = () => {
             this.filterCards();
             this.sortCards();
             this.generateCards();
@@ -62,9 +67,7 @@ class Mixify {
     filterCards() {
         const selectedIngredients = this.selectedIngredients;
         if (selectedIngredients.length == 0) {
-            // TODO: Select random n-cocktails to display
-            //       when no search terms are provided.
-            this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
+            this.filteredCocktails = this.defaultCocktails;
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
                 return selectedIngredients.some((ingredient) => 
