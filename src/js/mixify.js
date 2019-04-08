@@ -56,10 +56,15 @@ class Mixify {
         });
     }
 
+    get selectedIngredients() {
+        return this.searchIngredients.itemsArray.map((ingr) => ingr.toLowerCase());
+    }
+
     filterCards() {
-        const selectedIngredients = this.searchIngredients.itemsArray.map((ingr) => ingr.toLowerCase());
-        console.log(selectedIngredients)
+        const selectedIngredients = this.selectedIngredients;
         if (selectedIngredients.length == 0) {
+            // TODO: Select random n-cocktails to display
+            //       when no search terms are provided.
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails);
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
@@ -75,13 +80,23 @@ class Mixify {
         this.filteredCocktails.forEach((cocktailData) => {
             let ingredientHtml = ``;
             Object.keys(cocktailData.ingredients).forEach((key) => {
-                ingredientHtml += `<span class="badge badge-primary">${key}</span>`;
-            });            
+                let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
+
+                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
+            });
+
+            let alcoholClass = "success";
+            if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
+                alcoholClass = "warning";
+            } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Non') != -1) {
+                alcoholClass = "danger";
+            }
+
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
               <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-                  <p class="card-text">${cocktailData.name} <span class="badge badge-success">Alcoholic</span></p>
+                  <p class="card-text">${cocktailData.name} <span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span></p>
                   <div>
                     ${ingredientHtml}
                   </div>
