@@ -46,7 +46,8 @@ class Mixify {
         })[0];
 
         $('input').on('beforeItemAdd', (event) => {
-            // Only let users add items that are available through auto complete
+            // Cancel the item add if the ingredient the user is trying to add
+            // does not exists in our ingredient database.
             event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
