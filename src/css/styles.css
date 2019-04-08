@@ -28,7 +28,7 @@ white: #ffffff
     font-size: 1.5rem;
 }
 .search-bar {
-    border-radius: 4rem;
+    border-radius: 2rem;
     background: #fff;
     box-shadow: 0 0 1rem rgba(0,0,0,0.15);
 }
