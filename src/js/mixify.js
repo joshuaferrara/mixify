@@ -93,36 +93,85 @@ class Mixify {
         let outputHtml = `<div class="container"><div class="row">`;
         this.filteredCocktails.forEach((cocktailData) => {
             let ingredientHtml = ``;
+            let outputModal = `<div class="modal fade" id="${cocktailData.name.split(" ")}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title">${cocktailData.name}<span class="badge badge-`;
             Object.keys(cocktailData.ingredients).forEach((key) => {
                 let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
 
                 ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
             });
 
-            let alcoholClass = "success";
+            let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
                 alcoholClass = "warning";
             } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Non') != -1) {
                 alcoholClass = "danger";
+            } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Alcoholic') != -1) {
+                alcoholClass = "success";
             }
 
             // TODO: some cocktail objects don't have the `alcoholic`
             //       property. For these cases, we might wanna set
             //       the alcoholic property to a question mark or
             //       something.
-
+            
             outputHtml += `<div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
               <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-                  <p class="card-text">${cocktailData.name} <span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span></p>
+                  <a href="#${cocktailData.name.split(" ")}" data-toggle="modal" data-target="#${cocktailData.name.split(" ")}">${cocktailData.name}</a>`;
+
+                  
+                  if(alcoholClass == 0) {
+                    outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
+                    outputModal += `secondary float-right">Unknown</span>`;
+                  } else {
+                    outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+                    outputModal += `${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+                  }
+                  outputModal += `</h5>
+                  
+          </div>
+          <div class="col">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+                <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            </div>
+            <div class="col">
+              <h5>List of ingredients:</h5>
+              ${ingredientHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+                  outputHtml += `</p>
                   <div>
                     ${ingredientHtml}
                   </div>
               </div>
             </div>
-          </div>`;
+          </div>${outputModal}`;
+          
         });
+        console.log(this.filteredCocktails);
         outputHtml += `</div></div>`;
         $("#cocktailAlbum").html(outputHtml);
     }
