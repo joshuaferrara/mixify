@@ -112,7 +112,7 @@ class Mixify {
             //       something.
 
             outputHtml += `<div class="col-lg-3 d-flex">
-            <div class="card mb-4 flex-fill shadow-sm">
+            <div class="card mb-4 flex-fill shadow">
               <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
                   <p class="card-text">${cocktailData.name}<br>
