@@ -111,11 +111,13 @@ class Mixify {
             //       the alcoholic property to a question mark or
             //       something.
 
-            outputHtml += `<div class="col-lg-3">
-            <div class="card mb-4 shadow-sm">
-              <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            outputHtml += `<div class="col-lg-3 d-flex">
+            <div class="card mb-4 flex-fill shadow">
+              <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-                  <p class="card-text">${cocktailData.name} <span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span></p>
+                  <p class="card-text">${cocktailData.name}<br>
+                    <span class="badge badge-${alcoholClass} ">${cocktailData.alcoholic}</span>
+                  </p>
                   <div>
                     ${ingredientHtml}
                   </div>
