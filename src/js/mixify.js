@@ -87,13 +87,25 @@ class Mixify {
 
         console.warn("TODO: sort the cards");
     }
-
+    
     // Generates list of cards
     generateCards() {
+        let hashCode = function(s) {
+            var h = 0, l = s.length, i = 0;
+            if ( l > 0 )
+              while (i < l)
+                h = (h << 5) - h + s.charCodeAt(i++) | 0;
+            return h;
+          };
         let outputHtml = `<div class="container"><div class="row">`;
         this.filteredCocktails.forEach((cocktailData) => {
+            let Cid = hashCode(cocktailData.name);
+            if(Cid < 0) {
+                Cid *= -1;
+            }
             let ingredientHtml = ``;
-            let outputModal = `<div class="modal fade" id="${cocktailData.name.split(" ")}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            let ingredientsModal = `<ul>`;
+            let outputModal = `<div class="modal fade" id="t${Cid}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -105,8 +117,9 @@ class Mixify {
                 let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
 
                 ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
+                ingredientsModal += `<li class="">${key}: ${cocktailData.ingredients[key]}</li>`;
             });
-
+            ingredientsModal += `</ul>`;
             let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
                 alcoholClass = "warning";
@@ -125,7 +138,7 @@ class Mixify {
             <div class="card mb-4 shadow-sm">
               <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-                  <a href="#${cocktailData.name.split(" ")}" data-toggle="modal" data-target="#${cocktailData.name.split(" ")}">${cocktailData.name}</a>`;
+              <a href="#t${Cid}" data-toggle="modal" data-target="#t${Cid}">${cocktailData.name}</a>`;
 
                   
                   if(alcoholClass == 0) {
@@ -154,7 +167,13 @@ class Mixify {
             </div>
             <div class="col">
               <h5>List of ingredients:</h5>
-              ${ingredientHtml}
+              ${ingredientsModal}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5>Instructions:</h5>
+              ${cocktailData.instructions}
             </div>
           </div>
         </div>
