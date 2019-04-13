@@ -108,7 +108,6 @@ class Mixify {
         this.outputH[1] = `</div></div>`;
         for(let i = this.start; i < this.end; i++) {
           let cocktailData = this.filteredCocktails[i];
-          console.log(this.filteredCocktails);
             let Cid = hashCode(cocktailData.name);
             let outputHtml = ``;
             let ingredientHtml = ``;
@@ -212,8 +211,16 @@ class Mixify {
         $("#cocktailAlbum").html(displayHtml);
     }
     nextPage(pgNum){
+      if (pgNum == -1) {
+        this.start += this.displayNum;
+        this.end += this.displayNum;
+      } else if (pgNum == -2) {
+        this.start -= this.displayNum;
+        this.end -= this.displayNum;
+      } else {
         this.end = this.displayNum*pgNum;
         this.start = this.end - this.displayNum;
+      }
         this.generateCards();
         this.displayCards();
     }
@@ -224,6 +231,17 @@ $(document).ready(() => {
     
     $.getJSON("cocktails.json", (data) => {
         let a = new Mixify(data);
+        $(".page-item").click(function(){
+          let b = $(this).text();
+          console.log(b);
+          if(b == "Next") {
+            b = -1;
+            console.log("yes" + b);
+          } else if (b == "Previous") {
+            b = -2;
+          }
+          a.nextPage(b);
+        });
     });
+    
 });
-
