@@ -97,18 +97,9 @@ class Mixify {
     // Generates list of cards
     generateCards() {
         this.outputH = [];
-        let hashCode = function(s) {
-            var h = 0, l = s.length, i = 0;
-            if ( l > 0 )
-              while (i < l)
-                h = (h << 5) - h + s.charCodeAt(i++) | 0;
-            if(h < 0)
-                h *= -1;
-            return h;
-          };
         this.outputH[0] = `<div class="container"><div class="row">`;
         this.outputH[1] = `</div></div>`;
-        if( this.end > this.filteredCocktails.length) {
+        if(this.end > this.filteredCocktails.length) {
           this.end = this.filteredCocktails.length;
         } else if(this.end <= 0) {
           this.end += this.displayNum;
@@ -120,26 +111,15 @@ class Mixify {
         }
         for(let i = this.start; i < this.end; i++) {
           let cocktailData = this.filteredCocktails[i];
-            let Cid = hashCode(cocktailData.name);
             let outputHtml = ``;
             let ingredientHtml = ``;
-            let ingredientsModal = `<ul>`;
             //OUTPUT MODAL
-            let outputModal = `<div class="modal fade" id="t${Cid}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col">
-                            <h5 class="modal-title">${cocktailData.name}<span class="badge badge-`;
+            
             Object.keys(cocktailData.ingredients).forEach((key) => {
                 let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
 
                 ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
-                ingredientsModal += `<li class="">${key}: ${cocktailData.ingredients[key]}</li>`;
             });
-            ingredientsModal += `</ul>`;
             let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
                 alcoholClass = "warning";
@@ -155,62 +135,24 @@ class Mixify {
             //       something.
             
             outputHtml += `<div class="col-lg-3">
-            <div class="card mb-4 shadow-sm">
+            <div class="card mb-4 shadow-sm" id="${i}">
               <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-              <a href="#t${Cid}" data-toggle="modal" data-target="#t${Cid}">${cocktailData.name}</a>`;
+              <a href="#t${i}" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
 
                   
                   if(alcoholClass == 0) {
                     outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
-                    //OUTPUT MODAL
-                    outputModal += `secondary float-right">Unknown</span>`;
                   } else {
                     outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
-                    //OUTPUT MODAL
-                    outputModal += `${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
                   }
-                  //OUTPUT MODAL
-                  outputModal += `</h5>
-                  
-          </div>
-          <div class="col">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-          </div>
-        </div>
-      </div>
-      </div>
-      <div class="modal-body">
-        <div class="container">
-          <div class="row">
-            <div class="col">
-                <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
-            </div>
-            <div class="col">
-              <h5>List of ingredients:</h5>
-              ${ingredientsModal}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <h5>Instructions:</h5>
-              ${cocktailData.instructions}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`;
                   outputHtml += `</p>
                   <div>
                     ${ingredientHtml}
                   </div>
               </div>
             </div>
-          </div>${outputModal}`;
+          </div>`;
           this.outputH.push(outputHtml);
         }
         
@@ -221,6 +163,14 @@ class Mixify {
             displayHtml += this.outputH[i];
         displayHtml +=this.outputH[1];
         $("#cocktailAlbum").html(displayHtml);
+        let ChangeModalHndler = (b) => {
+          this.displayModal(b);
+        }
+        $(".card").click(function(){
+          let b = $(this).attr('id');
+          ChangeModalHndler(b);
+          $('#mod').modal('toggle');
+        });
     }
     nextPage(pgNum){
       //calculates the max page number
@@ -301,6 +251,73 @@ class Mixify {
         }
         ChangePageHndler(b);
       });
+    }
+    displayModal(mid){ 
+      let cocktailData = this.filteredCocktails[mid];
+      let ingredientsModal = `<ul>`;
+      Object.keys(cocktailData.ingredients).forEach((key) => {
+        let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
+        ingredientsModal += `<li class="">${key}: ${cocktailData.ingredients[key]}</li>`;
+      });
+      ingredientsModal += `</ul>`;
+      let alcoholClass = 0;
+      if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
+        alcoholClass = "warning";
+      } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Non') != -1) {
+        alcoholClass = "danger";
+      } else if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Alcoholic') != -1) {
+        alcoholClass = "success";
+      }
+      let outputModal = `<div class="modal fade" id="mod" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title">${cocktailData.name}<span class="badge badge-`;
+      if(alcoholClass == 0) {
+          //OUTPUT MODAL
+           outputModal += `secondary float-right">Unknown</span>`;
+         } else {
+           //OUTPUT MODAL
+           outputModal += `${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+         }
+         //OUTPUT MODAL
+         outputModal += `</h5>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="modal-body">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col">
+                          <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+                      </div>
+                      <div class="col">
+                        <h5>List of ingredients:</h5>
+                        ${ingredientsModal}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <h5>Instructions:</h5>
+                        ${cocktailData.instructions}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+          $("#displayModal1").html(outputModal);
+      
     }
 }
 
