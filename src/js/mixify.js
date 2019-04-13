@@ -2,7 +2,7 @@ class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
         this.outputH = [];
-        this.displayNum = 12;
+        this.displayNum = 100;
         this.start = 0;
         this.end = this.start + this.displayNum;
         
@@ -106,6 +106,16 @@ class Mixify {
           };
         this.outputH[0] = `<div class="container"><div class="row">`;
         this.outputH[1] = `</div></div>`;
+        if( this.end > this.filteredCocktails.length) {
+          this.end = this.filteredCocktails.length;
+        } else if(this.end <= 0) {
+          this.end += this.displayNum;
+        }
+        if(this.start < 0) {
+          this.start = 0;
+        } else if (this.start >= this.filteredCocktails.length) {
+          this.start -= this.displayNum;
+        }
         for(let i = this.start; i < this.end; i++) {
           let cocktailData = this.filteredCocktails[i];
             let Cid = hashCode(cocktailData.name);
@@ -233,10 +243,8 @@ $(document).ready(() => {
         let a = new Mixify(data);
         $(".page-item").click(function(){
           let b = $(this).text();
-          console.log(b);
           if(b == "Next") {
             b = -1;
-            console.log("yes" + b);
           } else if (b == "Previous") {
             b = -2;
           }
