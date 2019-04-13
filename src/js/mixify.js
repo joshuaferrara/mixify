@@ -2,7 +2,7 @@ class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
         this.outputH = [];
-        this.displayNum = 100;
+        this.displayNum = 12;
         this.start = 0;
         this.end = this.start + this.displayNum;
         
