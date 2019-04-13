@@ -223,11 +223,13 @@ class Mixify {
         $("#cocktailAlbum").html(displayHtml);
     }
     nextPage(pgNum){
+      //calculates the max page number
       let maxPg = Math.round(this.filteredCocktails.length/this.displayNum);
       if(maxPg - this.filteredCocktails.length/this.displayNum < 0) {
         maxPg += 1;
       }
-
+      //checks argument, if negative then its either pg next, back pg,
+      //or last pg
       if (pgNum == -1) {
         this.pgNum1 += 1;
       } else if (pgNum == -2) {
@@ -237,10 +239,13 @@ class Mixify {
       } else {
         this.pgNum1 = pgNum;
       }
-
+      //checks to see if pg number will be out of bounds
       if(this.pgNum1 > maxPg) {
         this.pgNum1 = maxPg;
+      } else if(this.pgNum1 < 1) {
+        this.pgNum1 = 1;
       }
+      //sets the values for displayCards to use
         this.end = this.displayNum*this.pgNum1;
         this.start = this.end - this.displayNum;
         
@@ -248,6 +253,7 @@ class Mixify {
         this.displayCards();
         this.changePagination();
     }
+    //changes the page numbers and also makes sure that it displays the real page number
     changePagination(){
       let numTabs = this.filteredCocktails.length / this.displayNum;
       let displayHtml = `<li class="page-item"><a class="page-link" href="#">&lt</a></li>
@@ -267,6 +273,9 @@ class Mixify {
       if(stop > numTabs) {
         stop = numTabs;
         i = numTabs -4;
+        if(i < 1) {
+          i = 1;
+        }
       }
       for(i; i <= stop; i++) {
         displayHtml += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
@@ -274,6 +283,7 @@ class Mixify {
       displayHtml += `<li class="page-item"><a class="page-link" href="#">Next</a></li>
                       <li class="page-item"><a class="page-link" href="#">&gt</a></li>`;
       $("#paginationHtml").html(displayHtml);
+      //this handles the conditions of a pg number getting clicked
       let ChangePageHndler = (b) => {
         this.nextPage(b);
       }
