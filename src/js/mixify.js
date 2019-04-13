@@ -1,6 +1,11 @@
 class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
+        this.outputH = [];
+        this.displayNum = 12;
+        this.start = 0;
+        this.end = this.start + this.displayNum;
+        
         Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
@@ -21,12 +26,10 @@ class Mixify {
         //       when no search terms are provided.
         this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
         Object.freeze(this.defaultCocktails);
-
         this.filteredCocktails = this.defaultCocktails;
-
         this.initializeSearchBar();
         this.generateCards();
-
+        this.displayCards();
         console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
     }
 
@@ -54,7 +57,9 @@ class Mixify {
         let tagInputChangeEventHandler = () => {
             this.filterCards();
             this.sortCards();
+            this.nextPage(1);
             this.generateCards();
+            this.displayCards();
         }
 
         $('input').on('itemAdded', tagInputChangeEventHandler);
@@ -76,7 +81,6 @@ class Mixify {
             });
         }
     }
-
     sortCards() {
         // TODO: sort cards in decreasing order based upon
         //       number of ingredients user has out of 
@@ -90,21 +94,26 @@ class Mixify {
     
     // Generates list of cards
     generateCards() {
+        this.outputH = [];
         let hashCode = function(s) {
             var h = 0, l = s.length, i = 0;
             if ( l > 0 )
               while (i < l)
                 h = (h << 5) - h + s.charCodeAt(i++) | 0;
+            if(h < 0)
+                h *= -1;
             return h;
           };
-        let outputHtml = `<div class="container"><div class="row">`;
-        this.filteredCocktails.forEach((cocktailData) => {
+        this.outputH[0] = `<div class="container"><div class="row">`;
+        this.outputH[1] = `</div></div>`;
+        for(let i = this.start; i < this.end; i++) {
+          let cocktailData = this.filteredCocktails[i];
+          console.log(this.filteredCocktails);
             let Cid = hashCode(cocktailData.name);
-            if(Cid < 0) {
-                Cid *= -1;
-            }
+            let outputHtml = ``;
             let ingredientHtml = ``;
             let ingredientsModal = `<ul>`;
+            //OUTPUT MODAL
             let outputModal = `<div class="modal fade" id="t${Cid}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
@@ -143,11 +152,14 @@ class Mixify {
                   
                   if(alcoholClass == 0) {
                     outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
+                    //OUTPUT MODAL
                     outputModal += `secondary float-right">Unknown</span>`;
                   } else {
                     outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+                    //OUTPUT MODAL
                     outputModal += `${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
                   }
+                  //OUTPUT MODAL
                   outputModal += `</h5>
                   
           </div>
@@ -188,19 +200,30 @@ class Mixify {
               </div>
             </div>
           </div>${outputModal}`;
-          
-        });
-        console.log(this.filteredCocktails);
-        outputHtml += `</div></div>`;
-        $("#cocktailAlbum").html(outputHtml);
+          this.outputH.push(outputHtml);
+        }
+        
+    }
+    displayCards() {
+        let displayHtml = this.outputH[0];
+        for(let i = 2; i < this.displayNum+2; i++)
+            displayHtml += this.outputH[i];
+        displayHtml +=this.outputH[1];
+        $("#cocktailAlbum").html(displayHtml);
+    }
+    nextPage(pgNum){
+        this.end = this.displayNum*pgNum;
+        this.start = this.end - this.displayNum;
+        this.generateCards();
+        this.displayCards();
     }
 }
 
 $(document).ready(() => {
     console.log("Loading Mixify...");
-
+    
     $.getJSON("cocktails.json", (data) => {
-        new Mixify(data);
+        let a = new Mixify(data);
     });
 });
 
