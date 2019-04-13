@@ -2,6 +2,7 @@ class Mixify {
     constructor(cocktailDb) {
         this.cocktailDb = cocktailDb;
         this.outputH = [];
+        this.pgNum1 = 1;
         this.displayNum = 12;
         this.start = 0;
         this.end = this.start + this.displayNum;
@@ -30,6 +31,7 @@ class Mixify {
         this.initializeSearchBar();
         this.generateCards();
         this.displayCards();
+        this.changePagination();
         console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
     }
 
@@ -221,18 +223,74 @@ class Mixify {
         $("#cocktailAlbum").html(displayHtml);
     }
     nextPage(pgNum){
-      if (pgNum == -1) {
-        this.start += this.displayNum;
-        this.end += this.displayNum;
-      } else if (pgNum == -2) {
-        this.start -= this.displayNum;
-        this.end -= this.displayNum;
-      } else {
-        this.end = this.displayNum*pgNum;
-        this.start = this.end - this.displayNum;
+      let maxPg = Math.round(this.filteredCocktails.length/this.displayNum);
+      if(maxPg - this.filteredCocktails.length/this.displayNum < 0) {
+        maxPg += 1;
       }
+
+      if (pgNum == -1) {
+        this.pgNum1 += 1;
+      } else if (pgNum == -2) {
+        this.pgNum1 -= 1;
+      } else if (pgNum == -3) {
+        this.pgNum1 = maxPg;
+      } else {
+        this.pgNum1 = pgNum;
+      }
+
+      if(this.pgNum1 > maxPg) {
+        this.pgNum1 = maxPg;
+      }
+        this.end = this.displayNum*this.pgNum1;
+        this.start = this.end - this.displayNum;
+        
         this.generateCards();
         this.displayCards();
+        this.changePagination();
+    }
+    changePagination(){
+      let numTabs = this.filteredCocktails.length / this.displayNum;
+      let displayHtml = `<li class="page-item"><a class="page-link" href="#">&lt</a></li>
+                         <li class="page-item"><a class="page-link" href="#">Back</a></li>`;
+      if(numTabs - Math.round(numTabs) > 0) {
+        numTabs =  Math.round(numTabs) + 1;
+      } else {
+        numTabs = Math.round(numTabs);
+      }
+      let i = this.pgNum1;
+      if(i < 3) {
+        i = 1;
+      } else {
+        i -= 2;
+      }
+      let stop = i+4;
+      if(stop > numTabs) {
+        stop = numTabs;
+        i = numTabs -4;
+      }
+      for(i; i <= stop; i++) {
+        displayHtml += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
+      }
+      displayHtml += `<li class="page-item"><a class="page-link" href="#">Next</a></li>
+                      <li class="page-item"><a class="page-link" href="#">&gt</a></li>`;
+      $("#paginationHtml").html(displayHtml);
+      let ChangePageHndler = (b) => {
+        this.nextPage(b);
+      }
+      $(".page-item").click(function(){
+        let b = $(this).text();
+        if(b == "Next") {
+          b = -1;
+        } else if (b == "Back") {
+          b = -2;
+        } else if (b == "<") {
+          b = 1;
+        }
+        else if(b == ">") {
+          b = -3;
+        }
+        ChangePageHndler(b);
+      });
     }
 }
 
@@ -241,15 +299,7 @@ $(document).ready(() => {
     
     $.getJSON("cocktails.json", (data) => {
         let a = new Mixify(data);
-        $(".page-item").click(function(){
-          let b = $(this).text();
-          if(b == "Next") {
-            b = -1;
-          } else if (b == "Previous") {
-            b = -2;
-          }
-          a.nextPage(b);
-        });
+      
     });
     
 });
