@@ -1,6 +1,6 @@
 /*
  * bootstrap-tagsinput v0.8.0
- * 
+ *
  */
  .bootstrap-tagsinput {
   background-color: transparent;
@@ -139,4 +139,9 @@ input.tt-input {
 
 .input-group span.twitter-typeahead .tt-menu {
 	top: 2.375rem !important;
+}
+
+.model-body{
+    background: rgba(53, 53, 151, 0.90);
+    color: white;
 }
