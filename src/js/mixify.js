@@ -113,8 +113,7 @@ class Mixify {
           let cocktailData = this.filteredCocktails[i];
             let outputHtml = ``;
             let ingredientHtml = ``;
-            //OUTPUT MODAL
-            
+                     
             Object.keys(cocktailData.ingredients).forEach((key) => {
                 let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
 
@@ -138,7 +137,7 @@ class Mixify {
             <div class="card mb-4 flex-fill shadow" id="${i}">
               <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-              <a href="#t${i}" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
+              <p>${cocktailData.name}</p>`;
 
                   
                   if(alcoholClass == 0) {
@@ -159,7 +158,8 @@ class Mixify {
     }
     displayCards() {
         let displayHtml = this.outputH[0];
-        for(let i = 2; i < this.displayNum+2; i++)
+
+        for(let i = 2; i < this.outputH.length; i++)
             displayHtml += this.outputH[i];
         displayHtml +=this.outputH[1];
         $("#cocktailAlbum").html(displayHtml);
