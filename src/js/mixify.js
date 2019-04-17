@@ -23,11 +23,11 @@ class Mixify {
             }
         */
         
-        this.checkAge().then((ofAge) => {
+        this.checkAge().then((hideAlcoholic) => {
           console.log(this.cocktailDb.cocktails);
 
           this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
-          if (ofAge == 'false') {
+          if (hideAlcoholic) {
             // Filter out all alcoholic cocktails
             this.defaultCocktails = this.defaultCocktails.filter((cocktail) => {
               if (cocktail.alcoholic == null) return false;
@@ -338,8 +338,8 @@ class Mixify {
     checkAge() {
       var ofAge = localStorage.getItem("of-age");
       if (ofAge != null) {
-        this.hideAlcoholic = !ofAge;
-        return new Promise((resolve, reject) => resolve(ofAge));
+        this.hideAlcoholic = (ofAge === "false");
+        return new Promise((resolve, reject) => resolve(this.hideAlcoholic));
       } else {
 
         return new Promise((resolve, reject) => {
@@ -349,7 +349,7 @@ class Mixify {
             localStorage.setItem("of-age", ofAge)
             this.hideAlcoholic = !ofAge;
             $("#ageModal").modal('hide');
-            resolve(ofAge);
+            resolve(this.hideAlcoholic);
           };
   
           $("#over21").click(() => ageResponse(true));
