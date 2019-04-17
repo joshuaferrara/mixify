@@ -349,7 +349,7 @@ class Mixify {
             localStorage.setItem("of-age", ofAge)
             this.hideAlcoholic = !ofAge;
             $("#ageModal").modal('hide');
-            resole(ofAge);
+            resolve(ofAge);
           };
   
           $("#over21").click(() => ageResponse(true));
