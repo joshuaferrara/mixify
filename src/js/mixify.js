@@ -29,12 +29,7 @@ class Mixify {
           this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
           if (hideAlcoholic) {
             // Filter out all alcoholic cocktails
-            this.defaultCocktails = this.defaultCocktails.filter((cocktail) => {
-              if (cocktail.alcoholic == null) return false;
-              return cocktail.alcoholic.toLowerCase() == "non alcoholic" || cocktail.alcoholic.toLowerCase() == "optional alcohol";
-            });
-
-            console.log('filtering');
+            this.defaultCocktails = this.defaultCocktails.filter((cocktail) => this.isNonAlcoholic(cocktail));
           }
 
           // TODO: Select random n-cocktails to display
@@ -48,6 +43,11 @@ class Mixify {
           this.changePagination();
           console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
         });
+    }
+
+    isNonAlcoholic(cocktail) {
+      if (cocktail.alcoholic == null) return false;
+      return cocktail.alcoholic.toLowerCase() == "non alcoholic" || cocktail.alcoholic.toLowerCase() == "optional alcohol";
     }
 
     // Sets up the search bar tagging stuff
@@ -93,6 +93,7 @@ class Mixify {
             this.filteredCocktails = this.defaultCocktails;
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
+                if (this.isNonAlcoholic(cocktail) === false && this.hideAlcoholic) return false;
                 return selectedIngredients.some((ingredient) => 
                                                  Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
             });
