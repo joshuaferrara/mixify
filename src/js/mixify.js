@@ -154,7 +154,7 @@ class Mixify {
             <div class="card mb-4 flex-fill shadow" id="${i}">
               <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-              <a href="#t${i}" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
+              <a href="#t${i}" class="drink-link" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
 
                   
                   if(alcoholClass == 0) {
@@ -322,7 +322,7 @@ class Mixify {
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col">
+                      <div class="col pt-2">
                         <h5>Instructions:</h5>
                         ${cocktailData.instructions}
                       </div>

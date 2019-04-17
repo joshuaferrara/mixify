@@ -11,6 +11,10 @@ white: #ffffff
     cursor: pointer;
 }
 
+.drink-link {
+    color: white;
+}
+
 .lead {
     color: white !important;
     font-size: 2em !important;
@@ -56,6 +60,11 @@ white: #ffffff
     color: #1e1d30;
     font-size: 1.5rem;
 }
+
+.bootstrap-tagsinput {
+    font-family: 'Poppins', sans-serif;
+}
+
 .album {
     background: transparent;
     font-family: 'Poppins', sans-serif;
