@@ -7,6 +7,10 @@ pink: #ed7d77
 white: #ffffff
 */
 
+.card {
+    cursor: pointer;
+}
+
 .lead {
     color: white !important;
     font-size: 2em !important;
