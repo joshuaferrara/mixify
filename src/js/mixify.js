@@ -23,16 +23,31 @@ class Mixify {
             }
         */
         
-        // TODO: Select random n-cocktails to display
-        //       when no search terms are provided.
-        this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
-        Object.freeze(this.defaultCocktails);
-        this.filteredCocktails = this.defaultCocktails;
-        this.initializeSearchBar();
-        this.generateCards();
-        this.displayCards();
-        this.changePagination();
-        console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
+        this.checkAge().then((ofAge) => {
+          console.log(this.cocktailDb.cocktails);
+
+          this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
+          if (ofAge == 'false') {
+            // Filter out all alcoholic cocktails
+            this.defaultCocktails = this.defaultCocktails.filter((cocktail) => {
+              if (cocktail.alcoholic == null) return false;
+              return cocktail.alcoholic.toLowerCase() == "non alcoholic" || cocktail.alcoholic.toLowerCase() == "optional alcohol";
+            });
+
+            console.log('filtering');
+          }
+
+          // TODO: Select random n-cocktails to display
+          //       when no search terms are provided.
+          Object.freeze(this.defaultCocktails);
+
+          this.filteredCocktails = this.defaultCocktails;
+          this.initializeSearchBar();
+          this.generateCards();
+          this.displayCards();
+          this.changePagination();
+          console.log(`Loaded Mixify with ${Object.keys(this.filteredCocktails).length} drinks.`);
+        });
     }
 
     // Sets up the search bar tagging stuff
@@ -319,14 +334,35 @@ class Mixify {
           $("#displayModal1").html(outputModal);
       
     }
+
+    checkAge() {
+      var ofAge = localStorage.getItem("of-age");
+      if (ofAge != null) {
+        this.hideAlcoholic = !ofAge;
+        return new Promise((resolve, reject) => resolve(ofAge));
+      } else {
+
+        return new Promise((resolve, reject) => {
+          $("#ageModal").modal('show');
+
+          let ageResponse = (ofAge) => {
+            localStorage.setItem("of-age", ofAge)
+            this.hideAlcoholic = !ofAge;
+            $("#ageModal").modal('hide');
+            resole(ofAge);
+          };
+  
+          $("#over21").click(() => ageResponse(true));
+          $("#under21").click(() => ageResponse(false));
+        });
+      }
+    }
 }
 
 $(document).ready(() => {
     console.log("Loading Mixify...");
     
     $.getJSON("cocktails.json", (data) => {
-        let a = new Mixify(data);
-      
+        new Mixify(data);
     });
-    
 });
