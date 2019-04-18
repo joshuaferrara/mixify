@@ -130,12 +130,13 @@ class Mixify {
             let outputHtml = ``;
             let ingredientHtml = ``;
             //OUTPUT MODAL
-            
-            Object.keys(cocktailData.ingredients).forEach((key) => {
-                let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
 
-                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
-            });
+            const totalIngredients = Object.keys(cocktailData.ingredients).length;
+            const hasIngredientsCount = Object.keys(cocktailData.ingredients).filter((ingredient) => {
+              return this.selectedIngredients.indexOf(ingredient.toLowerCase()) != -1;
+            }).length;
+            ingredientHtml += `<span class="badge badge-success m-1">${hasIngredientsCount}/${totalIngredients}</span>`;
+
             let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
                 alcoholClass = "warning";
@@ -154,14 +155,14 @@ class Mixify {
             <div class="card mb-4 flex-fill shadow" id="${i}">
               <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
-              <a href="#t${i}" class="drink-link" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
+              <a href="#t${i}" class="card-title drink-link" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
 
-                  
-                  if(alcoholClass == 0) {
+                  if (alcoholClass == 0) {
                     outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
                   } else {
                     outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
                   }
+
                   outputHtml += `</p>
                   <div>
                     ${ingredientHtml}
