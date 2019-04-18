@@ -153,7 +153,7 @@ class Mixify {
             
             outputHtml += `<div class="col-lg-3 d-flex">
             <div class="card mb-4 flex-fill shadow" id="${i}">
-              <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+              <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
               <div class="card-body">
               <a href="#t${i}" class="card-title drink-link" data-toggle="modal" data-target="#${i}">${cocktailData.name}</a>`;
 
