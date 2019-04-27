@@ -25,17 +25,23 @@
             </div>
             <p class="lead">We're keeping it simple: search a recipe and mix away</p>
             <div class="search-bar mt-5 p-3 p-lg-1 pl-lg-4">
-              <form action="#">
-                  <div class="input-group mb-3 d-flex text-left">
+              <form action="#" class="mb-0">
+                  <div class="input-group d-flex text-left">
                     <input type="text" data-role="tagsinput" class="form-control border-0 shadow-0" placeholder="Type an ingredient..." aria-label="Enter Ingredients" aria-describedby="basic-addon2">                    
                   </div>
               </form> 
             </div>
           </div>
         </div>
-        <div>
-          <div class="album py-5 mask rgba-gradient align-items-center" id="cocktailAlbum"></div>
+        <div >
+          <div class="album mask rgba-gradient align-items-center" id="cocktailAlbum"></div>
+      <div class="pt-0" id="displayModal1"></div>
+      <nav class="mt-0"aria-label="Page navigation example">
+        <ul class="pagination justify-content-center" id="paginationHtml">
+        </ul>
+      </nav>
         </div>
+        
         <footer class="footer mt-auto py-3">
             <div class="container">
               <span class="text-muted">Data provided by <a href="https://www.thecocktaildb.com/">TheCocktailDb.</a></span>
@@ -48,5 +54,27 @@
             </div>
         </footer>
       </div>
+
+      <div id="ageModal" class="modal fade" data-backdrop="static" id="mod" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="modal-title">We gotta do this...</h5>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-body text-center">
+              <p>Are you at least 21 years old?</p>
+
+              <div class="btn-group">
+                <button class="btn btn-primary" id="over21">Yes</button>
+                <button class="btn btn-secondary" id="under21">No</button>
+              </div>
+            </div>
+          </div>
     </body>
 </html>
