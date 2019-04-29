@@ -3,7 +3,7 @@ class Mixify {
         this.cocktailDb = cocktailDb;
         this.outputH = [];
         this.pgNum1 = 1;
-        this.displayNum = 12;
+        this.displayNum = 15;
         this.start = 0;
         this.end = this.start + this.displayNum;
         
@@ -113,8 +113,7 @@ class Mixify {
     // Generates list of cards
     generateCards() {
         this.outputH = [];
-        this.outputH[0] = `<div class="container"><div class="row">`;
-        this.outputH[1] = `</div></div>`;
+        this.outputH[0] = `<div class="container"><div class="card-columns">`;
         if(this.end > this.filteredCocktails.length) {
           this.end = this.filteredCocktails.length;
         } else if(this.end <= 0) {
@@ -149,25 +148,25 @@ class Mixify {
             //       the alcoholic property to a question mark or
             //       something.
             
-            outputHtml += `<div class="col-lg-3 d-flex">
-            <div class="card mb-4 flex-fill shadow" id="${i}">
-              <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
-              <div class="card-body">
-              <p>${cocktailData.name}</p>`;
 
-                  
-                  if(alcoholClass == 0) {
-                    outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
-                  } else {
-                    outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
-                  }
-                  outputHtml += `</p>
-                  <div>
-                    ${ingredientHtml}
-                  </div>
-              </div>
+            outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
+            <img class="bd-placeholder-img card-img-top flex-fill" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <div class="card-body">
+            <p>${cocktailData.name}</p>`;
+
+                
+                if(alcoholClass == 0) {
+                  outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
+                } else {
+                  outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+                }
+                outputHtml += `</p>
+                <div>
+                  ${ingredientHtml}
+                </div>
             </div>
           </div>`;
+
           this.outputH.push(outputHtml);
         }
         
