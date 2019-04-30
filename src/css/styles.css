@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Amatic+SC|Berkshire+Swash|Poppins');
 /* Color Scheme:
 Dark Blue: #1e1d30
-electric blue: #353598
+electric blue: #353598; rgba(53, 53, 151, 1.0);
 faded red: #a34b4f
 pink: #ed7d77
 white: #ffffff
@@ -85,10 +85,10 @@ header, footer, body {
     background: rgba(255, 255, 255, 0.5);
     font-family: 'Poppins', sans-serif;
 }
-a {
+a, .page-link {
     color: #a34b4f;
 }
-a:hover {
+a:hover .page-link:hover {
     color: #353598;
 }
 title, p, h1, .text-muted {
@@ -102,6 +102,9 @@ title, p, h1, .text-muted {
 .modal-content{
   background: rgba(53, 53, 151, 1);
   color: white;
+}
+a .page-link {
+    border: none;
 }
 /* Media Queries to resize + responsive Cards for card-columns */
 @media (min-width: 355px) {
