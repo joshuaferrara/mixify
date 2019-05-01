@@ -6,7 +6,11 @@ faded red: #a34b4f
 pink: #ed7d77
 white: #ffffff
 */
-
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
 .card {
     cursor: pointer;
 }

@@ -6,7 +6,7 @@ class Mixify {
         this.displayNum = 15;
         this.start = 0;
         this.end = this.start + this.displayNum;
-        
+        this.ingredientMultiplier = 1;
         Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
@@ -290,7 +290,16 @@ class Mixify {
       let ingredientsModal = `<ul>`;
       Object.keys(cocktailData.ingredients).forEach((key) => {
         let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
-        ingredientsModal += `<li class="">${key}: ${cocktailData.ingredients[key]}</li>`;
+        let newUnits = cocktailData.ingredients[key].split(" ");
+        newUnits[0] *= this.ingredientMultiplier;
+        let displayIngr = ``;
+        newUnits.forEach((ing) => {
+          displayIngr += ing;
+          displayIngr += ` `;
+        });
+        ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
+        
+        console.log(cocktailData.ingredients[key].split(" "));
       });
       ingredientsModal += `</ul>`;
       let alcoholClass = 0;
@@ -311,15 +320,27 @@ class Mixify {
                             <h5 class="modal-title">${cocktailData.name}<span class="badge badge-`;
       if(alcoholClass == 0) {
           //OUTPUT MODAL
-           outputModal += `secondary float-right">Unknown</span>`;
+           outputModal += `secondary ml-3"">Unknown</span>`;
          } else {
            //OUTPUT MODAL
-           outputModal += `${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
+           outputModal += `${alcoholClass} ml-3">${cocktailData.alcoholic}</span>`;
          }
          //OUTPUT MODAL
          outputModal += `</h5>
                     </div>
-                    <div class="col">
+                    <div class="col-1 mr-3">
+                        <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Units
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="#">Action</a>
+                          <a class="dropdown-item" href="#">Another action</a>
+                          <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-1">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
@@ -334,7 +355,24 @@ class Mixify {
                           <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
                       </div>
                       <div class="col">
-                        <h5>List of ingredients:</h5>
+                      <div class="btn-group float-right">
+                      <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Quantity: 1  
+                      <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <div class="dropdown-menu scrollable-menu">
+                      <a class="dropdown-item" href="#">1</a>
+                      <a class="dropdown-item" href="#">2</a>
+                      <a class="dropdown-item" href="#">3</a>
+                      <a class="dropdown-item" href="#">4</a>
+                      <a class="dropdown-item" href="#">5</a>
+                      <a class="dropdown-item" href="#">6</a>
+                      <a class="dropdown-item" href="#">7</a>
+                      <a class="dropdown-item" href="#">8</a>
+                      <a class="dropdown-item" href="#">9</a>
+                      </div>
+                    </div>
+                        <h5>List of ingredients: </h5>
                         ${ingredientsModal}
                       </div>
                     </div>
