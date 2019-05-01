@@ -99,15 +99,24 @@ class Mixify {
             });
         }
     }
-    sortCards() {
-        // TODO: sort cards in decreasing order based upon
-        //       number of ingredients user has out of 
-        //       total number of ingredients for that drink
-        //       Also, sort the ingredients in each cocktail
-        //       so that ingredients we have are rendered b4
-        //       ingredients we don't have.
 
-        console.warn("TODO: sort the cards");
+    sortCards() {
+        const numIngredientsRequired = (cocktail) => {
+          let ingredientList = Object.keys(cocktail.ingredients).map((val) => val.toLowerCase());
+          let count = ingredientList.length;
+          this.selectedIngredients.map((val) => val.toLowerCase()).forEach((ingredient) => {
+            if (ingredientList.indexOf(ingredient) != -1) count--;
+          });
+          return count;
+        };
+
+        this.filteredCocktails = this.filteredCocktails.sort((cocktailA, cocktailB) => {
+          let countA = numIngredientsRequired(cocktailA); 
+          let countB = numIngredientsRequired(cocktailB); 
+          if (countA > countB) return 1;
+          if (countA < countB) return -1;
+          return 0;
+        });
     }
     
     // Generates list of cards
@@ -128,10 +137,19 @@ class Mixify {
           let cocktailData = this.filteredCocktails[i];
             let outputHtml = ``;
             let ingredientHtml = ``;
-                     
-            Object.keys(cocktailData.ingredients).forEach((key) => {
-                let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
+           
+            const hasIngredient = (name) => {
+              return this.selectedIngredients.indexOf(name.toLowerCase()) != -1;
+            };
 
+            let cocktailIngredients = Object.keys(cocktailData.ingredients).sort((a, b) => {
+              if (hasIngredient(a) && !hasIngredient(b)) return -1;
+              if (hasIngredient(b) && !hasIngredient(a)) return 1;
+              return 0;
+            });
+
+            cocktailIngredients.forEach((key) => {
+                let hasIngredientClass = (hasIngredient(key) ? "success" : "primary");
                 ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
             });
             let alcoholClass = 0;
