@@ -290,16 +290,28 @@ class Mixify {
       let ingredientsModal = `<ul>`;
       Object.keys(cocktailData.ingredients).forEach((key) => {
         let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
-        let newUnits = cocktailData.ingredients[key].split(" ");
-        newUnits[0] *= this.ingredientMultiplier;
-        let displayIngr = ``;
-        newUnits.forEach((ing) => {
-          displayIngr += ing;
-          displayIngr += ` `;
-        });
-        ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
-        
-        console.log(cocktailData.ingredients[key].split(" "));
+              let newUnits;
+              let displayIngr = ` `;
+              if(cocktailData.ingredients[key]){ 
+                newUnits = cocktailData.ingredients[key].split(" ");
+                newUnits.forEach((ing) => {
+                  if(!isNaN(ing)) { 
+                    ing *= this.ingredientMultiplier;
+                  } else if (ing == `½`) {
+                    ing = (1*this.ingredientMultiplier)+`/`+2; 
+                  }else if(ing.includes("/")){
+                    let ing1 = ing.split("/");
+                    ing1[0] *= this.ingredientMultiplier;
+                    ing = ing1[0]+`/`+ing1[1];
+                  } else if(ing.includes("-")){
+                    let ing1 = ing.split("-");
+                    ing = (ing1[0]*this.ingredientMultiplier)+`-`+(ing1[1]*this.ingredientMultiplier);
+                  }
+                  displayIngr += ing;
+                  displayIngr += ` `;
+                });
+              } 
+              ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;      
       });
       ingredientsModal += `</ul>`;
       let alcoholClass = 0;
@@ -327,7 +339,7 @@ class Mixify {
          }
          let options = ``;
          for(let j = 0; j < 100; ++j) {
-           options += `<a class="dropdown-item" href="#">${j+1}</a>`;
+           options += `<a class="dropdown-item num" href="#">${j+1}</a>`;
          }
          //OUTPUT MODAL
          outputModal += `</h5>
@@ -361,7 +373,7 @@ class Mixify {
                       <div class="col">
                       <div class="btn-group float-right">
                       <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Quantity: 1  
+                      Quantity: <span id="quanNum" class="mr-1 ml-1">${this.ingredientMultiplier}</span>  
                       <span class="sr-only">Toggle Dropdown</span>
                       </button>
                       <div class="dropdown-menu scrollable-menu w-1">
@@ -387,24 +399,39 @@ class Mixify {
           </div>`;
           $("#displayModal1").html(outputModal);
           let ChangePageHndler = (b) => {
+            ingredientsModal = ``;
+            this.ingredientMultiplier =b;
+            $("#quanNum").html(this.ingredientMultiplier);
             Object.keys(cocktailData.ingredients).forEach((key) => {
               let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
-              let newUnits = cocktailData.ingredients[key].split(" ");
-              newUnits[0] *= this.ingredientMultiplier;
-              let displayIngr = ``;
-              newUnits.forEach((ing) => {
-                displayIngr += ing;
-                displayIngr += ` `;
-              });
+              let newUnits;
+              let displayIngr = ` `;
+              if(cocktailData.ingredients[key]){ 
+                newUnits = cocktailData.ingredients[key].split(" ");
+                newUnits.forEach((ing) => {
+                  if(!isNaN(ing)) { 
+                    ing *= this.ingredientMultiplier;
+                  } else if (ing == `½`) {
+                    ing = (1*this.ingredientMultiplier)+`/`+2; 
+                  }else if(ing.includes("/")){
+                    let ing1 = ing.split("/");
+                    ing1[0] *= this.ingredientMultiplier;
+                    ing = ing1[0]+`/`+ing1[1];
+                  } else if(ing.includes("-")){
+                    let ing1 = ing.split("-");
+                    ing = (ing1[0]*this.ingredientMultiplier)+`-`+(ing1[1]*this.ingredientMultiplier);
+                  }
+                  displayIngr += ing;
+                  displayIngr += ` `;
+                });
+              }             
               ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
-              
-              console.log(cocktailData.ingredients[key].split(" "));
             });
             $("#ingredients").html(ingredientsModal);
 
           
           }
-          $(".dropdown-item").click(function(){
+          $(".num").click(function(){
             let b = $(this).text();
             ChangePageHndler(b);
           });
