@@ -325,6 +325,10 @@ class Mixify {
            //OUTPUT MODAL
            outputModal += `${alcoholClass} ml-3">${cocktailData.alcoholic}</span>`;
          }
+         let options = ``;
+         for(let j = 0; j < 100; ++j) {
+           options += `<a class="dropdown-item" href="#">${j+1}</a>`;
+         }
          //OUTPUT MODAL
          outputModal += `</h5>
                     </div>
@@ -360,20 +364,14 @@ class Mixify {
                       Quantity: 1  
                       <span class="sr-only">Toggle Dropdown</span>
                       </button>
-                      <div class="dropdown-menu scrollable-menu">
-                      <a class="dropdown-item" href="#">1</a>
-                      <a class="dropdown-item" href="#">2</a>
-                      <a class="dropdown-item" href="#">3</a>
-                      <a class="dropdown-item" href="#">4</a>
-                      <a class="dropdown-item" href="#">5</a>
-                      <a class="dropdown-item" href="#">6</a>
-                      <a class="dropdown-item" href="#">7</a>
-                      <a class="dropdown-item" href="#">8</a>
-                      <a class="dropdown-item" href="#">9</a>
+                      <div class="dropdown-menu scrollable-menu w-1">
+                      ${options}
                       </div>
                     </div>
                         <h5>List of ingredients: </h5>
+                        <div id="ingredients">
                         ${ingredientsModal}
+                        </div>
                       </div>
                     </div>
                     <div class="row">
@@ -388,7 +386,28 @@ class Mixify {
             </div>
           </div>`;
           $("#displayModal1").html(outputModal);
-      
+          let ChangePageHndler = (b) => {
+            Object.keys(cocktailData.ingredients).forEach((key) => {
+              let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
+              let newUnits = cocktailData.ingredients[key].split(" ");
+              newUnits[0] *= this.ingredientMultiplier;
+              let displayIngr = ``;
+              newUnits.forEach((ing) => {
+                displayIngr += ing;
+                displayIngr += ` `;
+              });
+              ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
+              
+              console.log(cocktailData.ingredients[key].split(" "));
+            });
+            $("#ingredients").html(ingredientsModal);
+
+          
+          }
+          $(".dropdown-item").click(function(){
+            let b = $(this).text();
+            ChangePageHndler(b);
+          });
     }
 
     checkAge() {
