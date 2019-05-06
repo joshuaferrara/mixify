@@ -148,3 +148,10 @@ a .page-link {
         column-count: 5;
     }
 }
+
+#firebaseui-auth-container {
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    top: 0;
+}

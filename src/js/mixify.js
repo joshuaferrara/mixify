@@ -50,6 +50,23 @@ class Mixify {
       return cocktail.alcoholic.toLowerCase() == "non alcoholic" || cocktail.alcoholic.toLowerCase() == "optional alcohol";
     }
 
+    login() {
+      firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(result) {
+        var token = result.credential.accessToken;
+        var user = result.user;
+
+        console.log(token);
+        console.log(user);
+      }).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+
+        console.log(error);
+      });
+    }
+
     // Sets up the search bar tagging stuff
     initializeSearchBar() {
         var ingredientNames = new Bloodhound({
@@ -463,8 +480,29 @@ class Mixify {
 
 $(document).ready(() => {
     console.log("Loading Mixify...");
+
+    firebase.initializeApp({
+      apiKey: "AIzaSyAWKzPYvMvAW-Bh3caJXlqn9Axn_F9_bZ8",
+      authDomain: "mixify-88b9c.firebaseapp.com",
+      databaseURL: "https://mixify-88b9c.firebaseio.com",
+      projectId: "mixify-88b9c",
+      storageBucket: "mixify-88b9c.appspot.com",
+      messagingSenderId: "167156542489",
+      appId: "1:167156542489:web:2efd4b1dca6a3224"
+    });
+
+    var uiConfig = {
+      signInFlow: 'popup',
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      ],
+    };
+
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
     
     $.getJSON("cocktails.json", (data) => {
-        new Mixify(data);
+        const mix = new Mixify(data);
+        document.mixify = mix;
     });
 });
