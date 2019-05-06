@@ -18,8 +18,6 @@ class Mixify {
           credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
           callbacks: {
             signInSuccess: (currentUser, credential, redirectUrl) => {
-              console.log(currentUser);
-              console.log(credential);
               this.loggedIn = true;
               this.user = currentUser;
               const userDataDocRef = this.db.collection('users').doc(this.user.uid);
@@ -71,8 +69,6 @@ class Mixify {
         */
         
         this.checkAge().then((hideAlcoholic) => {
-          console.log(this.cocktailDb.cocktails);
-
           this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
           if (hideAlcoholic) {
             // Filter out all alcoholic cocktails
