@@ -90,7 +90,7 @@ class Mixify {
     filterCards() {
         const selectedIngredients = this.selectedIngredients;
         if (selectedIngredients.length == 0) {
-            this.filteredCocktails = this.defaultCocktails;
+            this.filteredCocktails = this.defaultCocktails.slice();
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
                 if (this.isNonAlcoholic(cocktail) === false && this.hideAlcoholic) return false;
