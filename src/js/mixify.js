@@ -287,6 +287,7 @@ class Mixify {
       });
     }
     displayModal(mid){ 
+      this.ingredientMultiplier = 1;
       let cocktailData = this.filteredCocktails[mid];     
       let alcoholClass = 0;
       if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
