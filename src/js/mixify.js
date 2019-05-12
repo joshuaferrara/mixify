@@ -320,16 +320,7 @@ class Mixify {
          outputModal += `</h5>
                     </div>
                     <div class="col-1 mr-3">
-                        <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Units
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                        </div>
+                        
                     </div>
                     <div class="col-1">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -395,7 +386,18 @@ class Mixify {
                   if(!isNaN(ing)) { 
                     ing *= this.ingredientMultiplier;
                   } else if (ing == `½`) {
-                    ing = (1*this.ingredientMultiplier)+`/`+2; 
+                    //ing = (1*this.ingredientMultiplier)+`/`+2; 
+                    let wNum = math.divide(1*this.ingredientMultiplier, 2);
+                    wNum = math.floor(wNum);
+                    if(wNum == 0){
+                      wNum = ` `;
+                    }
+                    let numer = math.mod(1*this.ingredientMultiplier, 2);
+                    if(numer == 0) {
+                      ing = wNum;
+                    } else {
+                      ing = wNum + ` `+ numer+`/`+ing1[1];
+                    }
                   }else if(ing.includes("/")){
                     let ing1 = ing.split("/");
                     ing1[0] *= this.ingredientMultiplier;
@@ -406,11 +408,10 @@ class Mixify {
                     }
                     let numer = math.mod(ing1[0], ing1[1]);
                     if(numer == 0) {
-                      ing = wNum;// + ` `+ numer+`/`+ing1[1];
+                      ing = wNum;
                     } else {
                       ing = wNum + ` `+ numer+`/`+ing1[1];
                     }
-                    
                   } else if(ing.includes("-")){
                     let ing1 = ing.split("-");
                     ing = (ing1[0]*this.ingredientMultiplier)+`-`+(ing1[1]*this.ingredientMultiplier);
