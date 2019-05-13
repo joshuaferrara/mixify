@@ -234,26 +234,18 @@ class Mixify {
             //       property. For these cases, we might wanna set
             //       the alcoholic property to a question mark or
             //       something.
-            
 
             outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
             <i class="${this.isFavorite(i) ? 'fas' : 'far'} fa-heart" id="fav-${i}"></i>
             <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
             <div class="card-body" data.drinkid="${i}">
-            <p>${cocktailData.name}</p>`;
-
-                
-                if(alcoholClass == 0) {
-                  outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
-                } else {
-                  outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
-                }
-                outputHtml += `</p>
-                <div>
-                  ${ingredientHtml}
-                </div>
+            <p>${cocktailData.name}</p>
+            <div>
+              ${ingredientHtml}
             </div>
-          </div>`;
+            </div>
+            </div>`;
 
           this.outputH.push(outputHtml);
         }
