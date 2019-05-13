@@ -49,9 +49,9 @@
 .bootstrap-tagsinput .badge {
   margin-right: 2px;
   color: white;
-  background-color:#a34b4f;
+  background-color:#595183;
   padding:5px 8px;border-radius:3px;
-  border:1px solid #a34b4f;
+  border:1px solid #595183;
 }
 
 .bootstrap-tagsinput .badge [data-role="remove"] {
@@ -119,7 +119,7 @@ span.twitter-typeahead .tt-suggestion:focus, .dropdown-item:hover, span.twitter-
 span.twitter-typeahead .active.tt-suggestion, span.twitter-typeahead .tt-suggestion.tt-cursor, span.twitter-typeahead .active.tt-suggestion:focus, span.twitter-typeahead .tt-suggestion.tt-cursor:focus, span.twitter-typeahead .active.tt-suggestion:hover, span.twitter-typeahead .tt-suggestion.tt-cursor:hover {
     color: #fff;
     text-decoration: none;
-    background-color: #a34b4f;
+    background-color: #595183;
     outline: 0; }
 span.twitter-typeahead .disabled.tt-suggestion, span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
     color: #818a91; }
@@ -142,10 +142,10 @@ input.tt-input {
 }
 
 .model-body{
-    background: rgba(53, 53, 151, 0.90);
+    background: #595183;
     color: white;
 }
 .modal-content{
-  background: rgba(53, 53, 151, 0.90);
+  background: #595183;
   color: white;
 }
