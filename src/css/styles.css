@@ -64,8 +64,8 @@ white: #ffffff
 
 .alcoholic-tag {
     position: absolute;
-    top: 0.5vw;
-    left: 0.5vw;
+    top: 0.5em;
+    left: 0.5em;
 }
 
 .bootstrap-tagsinput {
@@ -132,7 +132,8 @@ a .page-link {
         padding: 0rem !important; 
     }
 }
-@media (min-width: 576px) {
+
+@media (min-width: 400px) {
     .card-columns {
         column-count: 2;
     }
@@ -140,13 +141,13 @@ a .page-link {
 
 @media (min-width: 768px) {
     .card-columns {
-        column-count: 3;
+        column-count: 2;
     }
 }
 
 @media (min-width: 992px) {
     .card-columns {
-        column-count: 4;
+        column-count: 2;
     }
 }
 
