@@ -172,9 +172,9 @@
         }
   
         if (this.isInit) {
-          self.$element.trigger($.Event('itemAddedOnInit', { item: item, options: options }));
+          self.$element.trigger($.Event('itemAddedOnInit', { item: item, options: options, tag: $tag }));
         } else {
-          self.$element.trigger($.Event('itemAdded', { item: item, options: options }));
+          self.$element.trigger($.Event('itemAdded', { item: item, options: options, tag: $tag }));
         }
       },
   

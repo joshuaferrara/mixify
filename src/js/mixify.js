@@ -136,10 +136,22 @@ class Mixify {
         $('input').on('beforeItemAdd', (event) => {
             // Cancel the item add if the ingredient the user is trying to add
             // does not exists in our ingredient database.
-            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item.replace(/\!/g, '')) == -1;
         });
 
-        let tagInputChangeEventHandler = () => {
+        let tagInputChangeEventHandler = (event) => {
+            if (event.tag !== undefined) {
+              // Item is added
+              $(event.tag).click(() => {
+                // When a tag is clicked, let's negate that tag
+                // so that the search doesn't include that tag.
+                console.log(event.item); // Tag name
+                console.log(this.searchIngredients)
+                this.searchIngredients.remove(event.item);
+                this.searchIngredients.add(`!${event.item}`);
+              });
+            }
+
             this.filterCards();
             this.sortCards();
             this.nextPage(1);
