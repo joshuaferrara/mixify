@@ -52,6 +52,7 @@ class Mixify {
         this.start = 0;
         this.end = this.start + this.displayNum;
         this.ingredientMultiplier = 1;
+        this.ingredientUnit = "Metric";
         Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
@@ -245,26 +246,18 @@ class Mixify {
             //       property. For these cases, we might wanna set
             //       the alcoholic property to a question mark or
             //       something.
-            
 
             outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
             <i class="${this.isFavorite(i) ? 'fas' : 'far'} fa-heart" id="fav-${i}"></i>
             <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
             <div class="card-body" data.drinkid="${i}">
-            <p>${cocktailData.name}</p>`;
-
-                
-                if(alcoholClass == 0) {
-                  outputHtml += `<span class="badge badge-secondary float-right">Unknown</span>`;
-                } else {
-                  outputHtml += `<span class="badge badge-${alcoholClass} float-right">${cocktailData.alcoholic}</span>`;
-                }
-                outputHtml += `</p>
-                <div>
-                  ${ingredientHtml}
-                </div>
+            <p>${cocktailData.name}</p>
+            <div>
+              ${ingredientHtml}
             </div>
-          </div>`;
+            </div>
+            </div>`;
 
           this.outputH.push(outputHtml);
         }
@@ -373,34 +366,8 @@ class Mixify {
       });
     }
     displayModal(mid){ 
-      let cocktailData = this.filteredCocktails[mid];
-      let ingredientsModal = `<ul>`;
-      Object.keys(cocktailData.ingredients).forEach((key) => {
-        let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
-              let newUnits;
-              let displayIngr = ` `;
-              if(cocktailData.ingredients[key]){ 
-                newUnits = cocktailData.ingredients[key].split(" ");
-                newUnits.forEach((ing) => {
-                  if(!isNaN(ing)) { 
-                    ing *= this.ingredientMultiplier;
-                  } else if (ing == `½`) {
-                    ing = (1*this.ingredientMultiplier)+`/`+2; 
-                  }else if(ing.includes("/")){
-                    let ing1 = ing.split("/");
-                    ing1[0] *= this.ingredientMultiplier;
-                    ing = ing1[0]+`/`+ing1[1];
-                  } else if(ing.includes("-")){
-                    let ing1 = ing.split("-");
-                    ing = (ing1[0]*this.ingredientMultiplier)+`-`+(ing1[1]*this.ingredientMultiplier);
-                  }
-                  displayIngr += ing;
-                  displayIngr += ` `;
-                });
-              } 
-              ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;      
-      });
-      ingredientsModal += `</ul>`;
+      this.ingredientMultiplier = 1;
+      let cocktailData = this.filteredCocktails[mid];     
       let alcoholClass = 0;
       if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
         alcoholClass = "warning";
@@ -432,16 +399,7 @@ class Mixify {
          outputModal += `</h5>
                     </div>
                     <div class="col-1 mr-3">
-                        <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Units
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                        </div>
+                        
                     </div>
                     <div class="col-1">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -469,7 +427,6 @@ class Mixify {
                     </div>
                         <h5>List of ingredients: </h5>
                         <div id="ingredients">
-                        ${ingredientsModal}
                         </div>
                       </div>
                     </div>
@@ -485,10 +442,19 @@ class Mixify {
             </div>
           </div>`;
           $("#displayModal1").html(outputModal);
+          this.ingredientsManipulations(cocktailData);
           let ChangePageHndler = (b) => {
-            ingredientsModal = ``;
-            this.ingredientMultiplier =b;
-            $("#quanNum").html(this.ingredientMultiplier);
+            this.ingredientMultiplier =b;   
+            this.ingredientsManipulations(cocktailData);     
+          }
+          $(".num").click(function(){
+            let b = $(this).text();
+            ChangePageHndler(b);
+          });
+    }
+    ingredientsManipulations(cocktailData){
+      $("#quanNum").html(this.ingredientMultiplier);
+      let ingredientsModal = `<ul>`;
             Object.keys(cocktailData.ingredients).forEach((key) => {
               let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
               let newUnits;
@@ -499,11 +465,32 @@ class Mixify {
                   if(!isNaN(ing)) { 
                     ing *= this.ingredientMultiplier;
                   } else if (ing == `½`) {
-                    ing = (1*this.ingredientMultiplier)+`/`+2; 
+                    //ing = (1*this.ingredientMultiplier)+`/`+2; 
+                    let wNum = math.divide(1*this.ingredientMultiplier, 2);
+                    wNum = math.floor(wNum);
+                    if(wNum == 0){
+                      wNum = ` `;
+                    }
+                    let numer = math.mod(1*this.ingredientMultiplier, 2);
+                    if(numer == 0) {
+                      ing = wNum;
+                    } else {
+                      ing = wNum + ` `+ numer+`/`+ing1[1];
+                    }
                   }else if(ing.includes("/")){
                     let ing1 = ing.split("/");
                     ing1[0] *= this.ingredientMultiplier;
-                    ing = ing1[0]+`/`+ing1[1];
+                    let wNum = math.divide(ing1[0], ing1[1]);
+                    wNum = math.floor(wNum);
+                    if(wNum == 0){
+                      wNum = ` `;
+                    }
+                    let numer = math.mod(ing1[0], ing1[1]);
+                    if(numer == 0) {
+                      ing = wNum;
+                    } else {
+                      ing = wNum + ` `+ numer+`/`+ing1[1];
+                    }
                   } else if(ing.includes("-")){
                     let ing1 = ing.split("-");
                     ing = (ing1[0]*this.ingredientMultiplier)+`-`+(ing1[1]*this.ingredientMultiplier);
@@ -514,16 +501,9 @@ class Mixify {
               }             
               ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
             });
+            ingredientsModal += `</ul>`;
             $("#ingredients").html(ingredientsModal);
-
-          
-          }
-          $(".num").click(function(){
-            let b = $(this).text();
-            ChangePageHndler(b);
-          });
     }
-
     checkAge() {
       var ofAge = localStorage.getItem("of-age");
       if (ofAge != null) {
