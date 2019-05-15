@@ -294,7 +294,7 @@ class Mixify {
 
             cocktailIngredients.forEach((key) => {
                 let hasIngredientClass = (hasIngredient(key) ? "success" : "primary");
-                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
+                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1" id="tagButton">${key}</span>`;
             });
             let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
@@ -348,6 +348,34 @@ class Mixify {
         $(".fa-heart").click((event) => {
           this.toggleFavorite($(event.target).attr('id').replace('fav-', ''));
         });
+        $(".badge-primary").click(function() {
+          var key = $("#tagButton").text();
+
+          var ingredientName = key;
+          this.searchIngredients = $('input').tagsinput({
+              typeaheadjs: {
+              source: ingredientName
+             }
+          })[0];
+         this.searchIngredients.add(ingredientName);
+
+         $('input').on('beforeItemAdd', (event) => {
+            // Cancel the item add if the ingredient the user is trying to add
+            // does not exists in our ingredient database.
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
+         });
+
+         let tagInputChangeEventHandler = () => {
+             this.filterCards();
+             this.sortCards();
+             this.nextPage(1);
+             this.generateCards();
+             this.displayCards();
+         }
+
+         $('input').on('itemAdded', tagInputChangeEventHandler);
+         $('input').on('itemRemoved', tagInputChangeEventHandler);
+      });
     }
     nextPage(pgNum){
       //calculates the max page number
