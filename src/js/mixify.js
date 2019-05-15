@@ -143,13 +143,20 @@ class Mixify {
         let tagInputChangeEventHandler = (event) => {
             if (event.tag !== undefined) {
               // Item is added
-              $(event.tag).click(() => {
+              $(event.tag).click((tagClick) => {
+                console.log(tagClick);
                 // When a tag is clicked, let's negate that tag
                 // so that the search doesn't include that tag.
-                console.log(event.item); // Tag name
-                console.log(this.searchIngredients)
+                if (event.item[0] == "!") {
+                  this.searchIngredients.remove(event.item);
+                  this.searchIngredients.add(`${event.item.substr(1)}`);
+                } else {
+                  this.searchIngredients.remove(event.item);
+                  this.searchIngredients.add(`!${event.item}`);
+                }
+              }).children().on("click", (e) => {
+                e.stopPropagation();
                 this.searchIngredients.remove(event.item);
-                this.searchIngredients.add(`!${event.item}`);
               });
             }
 
@@ -170,10 +177,25 @@ class Mixify {
 
     filterCards() {
         const selectedIngredients = this.selectedIngredients;
-        if (selectedIngredients.length == 0) {
-            this.filteredCocktails = this.defaultCocktails.slice();
+        const negatedIngredients = selectedIngredients.filter((ingr) => ingr[0] == "!").map((ingr) => ingr.substr(1));
+        if (selectedIngredients.length == 0 || (negatedIngredients.length != 0 && selectedIngredients == 0) || (selectedIngredients.length == negatedIngredients.length)) {
+            this.filteredCocktails = this.defaultCocktails.slice().filter((cocktail) => {
+              // Remove any cocktails that include negated ingredients
+              let includesNegated = false;
+              Object.keys(cocktail.ingredients).forEach((ingr) => {
+                if (negatedIngredients.indexOf(ingr) != -1) includesNegated = true;
+              });
+              return !includesNegated;
+            });
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
+              // Remove any cocktails that include negated ingredients
+              let includesNegated = false;
+              Object.keys(cocktail.ingredients).forEach((ingr) => {
+                if (negatedIngredients.indexOf(ingr.toLowerCase()) != -1) includesNegated = true;
+              });
+              return !includesNegated;
+            }).filter((cocktail) => {
                 if (this.isNonAlcoholic(cocktail) === false && this.hideAlcoholic) return false;
                 return selectedIngredients.some((ingredient) => 
                                                  Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
@@ -182,13 +204,20 @@ class Mixify {
     }
 
     sortCards() {
+        let arrayDiff = (a, b) => {
+          return [
+              ...a.filter(x => b.indexOf(x) === -1),
+              ...b.filter(x => a.indexOf(x) === -1)
+          ];
+        }
+
         const numIngredientsRequired = (cocktail) => {
           let ingredientList = Object.keys(cocktail.ingredients).map((val) => val.toLowerCase());
-          let count = ingredientList.length;
-          this.selectedIngredients.map((val) => val.toLowerCase()).forEach((ingredient) => {
-            if (ingredientList.indexOf(ingredient) != -1) count--;
-          });
-          return count;
+          let selectedList = this.selectedIngredients.map((val) => val.toLowerCase()).filter((ingr) => ingr[0] != "!");
+
+          const diff = arrayDiff(ingredientList, selectedList);
+
+          return diff.length;
         };
 
         this.filteredCocktails = this.filteredCocktails.sort((cocktailA, cocktailB) => {
@@ -214,6 +243,9 @@ class Mixify {
         } else if (this.start >= this.filteredCocktails.length) {
           this.start -= this.displayNum;
         }
+        console.log(this.filteredCocktails)
+        console.log(this.start)
+        console.log(this.end)
         for(let i = this.start; i < this.end; i++) {
           let cocktailData = this.filteredCocktails[i];
             let outputHtml = ``;
@@ -222,6 +254,8 @@ class Mixify {
             const hasIngredient = (name) => {
               return this.selectedIngredients.indexOf(name.toLowerCase()) != -1;
             };
+
+            if (cocktailData == undefined) continue;
 
             let cocktailIngredients = Object.keys(cocktailData.ingredients).sort((a, b) => {
               if (hasIngredient(a) && !hasIngredient(b)) return -1;
@@ -267,9 +301,10 @@ class Mixify {
     displayCards() {
         let displayHtml = this.outputH[0];
 
-        for(let i = 2; i < this.outputH.length; i++)
-            displayHtml += this.outputH[i];
-        displayHtml +=this.outputH[1];
+        for(let i = 1; i < this.outputH.length; i++) {
+          displayHtml += this.outputH[i];
+        }
+        
         $("#cocktailAlbum").html(displayHtml);
         let ChangeModalHndler = (b) => {
           this.displayModal(b);
