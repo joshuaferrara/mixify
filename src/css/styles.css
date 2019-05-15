@@ -161,6 +161,10 @@ a .page-link {
     }
 }
 
+label[for="favCheck"] {
+    color: white;
+}
+
 #firebaseui-auth-container {
     position: fixed;
     z-index: 10;

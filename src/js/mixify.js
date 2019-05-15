@@ -24,6 +24,8 @@ class Mixify {
               userDataDocRef.get().then((dataDoc) => {
                 if (dataDoc.exists) {
                   this.userData = dataDoc.data();
+                  this.generateCards();
+                  this.displayCards();
                 } else {
                   userDataDocRef.set({
                     favorites: [],
@@ -128,13 +130,16 @@ class Mixify {
         });
         ingredientNames.initialize();
 
-        this.searchIngredients = $('input').tagsinput({
+        // bootstrap tags input has a terrible API that doesn't seem
+        // to play nicely with jQuery anymore. Targeting it like 
+        // this isn't ideal, but we're gonna live with it for now.
+        this.searchIngredients = $('input[type="text"]').tagsinput({
             typeaheadjs: {
               source: ingredientNames
             }
         })[0];
 
-        $('input').on('beforeItemAdd', (event) => {
+        $('input[type="text"]').on('beforeItemAdd', (event) => {
             // Cancel the item add if the ingredient the user is trying to add
             // does not exists in our ingredient database.
             event.cancel = this.cocktailDb.ingredients.indexOf(event.item.replace(/\!/g, '')) == -1;
@@ -167,8 +172,22 @@ class Mixify {
             this.displayCards();
         }
 
-        $('input').on('itemAdded', tagInputChangeEventHandler);
-        $('input').on('itemRemoved', tagInputChangeEventHandler);
+        $('input[type="text"]').on('itemAdded', tagInputChangeEventHandler);
+        $('input[type="text"]').on('itemRemoved', tagInputChangeEventHandler);
+
+        $('#favCheck').change((event) => {
+          if (!this.loggedIn) {
+            alert('You must be logged in to view favorited drinks.');
+            event.target.checked = false;
+            return;
+          }
+          this.onlyFavorites = event.target.checked;
+          this.filterCards();
+          this.sortCards();
+          this.nextPage(1);
+          this.generateCards();
+          this.displayCards();
+        })
     }
 
     get selectedIngredients() {
@@ -186,6 +205,11 @@ class Mixify {
                 if (negatedIngredients.indexOf(ingr) != -1) includesNegated = true;
               });
               return !includesNegated;
+            }).filter((cocktail) => {
+              if (!this.loggedIn) return true;
+              if (!this.onlyFavorites) return true;
+              if (!this.isFavorite(cocktail.id)) return false;
+              return true;
             });
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
@@ -199,6 +223,11 @@ class Mixify {
                 if (this.isNonAlcoholic(cocktail) === false && this.hideAlcoholic) return false;
                 return selectedIngredients.some((ingredient) => 
                                                  Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
+            }).filter((cocktail) => {
+              if (!this.loggedIn) return true;
+              if (!this.onlyFavorites) return true;
+              if (!this.isFavorite(cocktail.id)) return false;
+              return true;
             });
         }
     }
@@ -282,8 +311,8 @@ class Mixify {
             //       something.
 
             outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
-            <i class="${this.isFavorite(i) ? 'fas' : 'far'} fa-heart" id="fav-${i}"></i>
-            <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <i class="${this.isFavorite(cocktailData.id) ? 'fas' : 'far'} fa-heart" id="fav-${cocktailData.id}"></i>
+            <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${cocktailData.id}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
             <div class="card-body" data.drinkid="${i}">
             <p>${cocktailData.name}</p>
