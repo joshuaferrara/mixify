@@ -9,7 +9,7 @@ class Mixify {
           messagingSenderId: "167156542489",
           appId: "1:167156542489:web:2efd4b1dca6a3224"
         });
-    
+
         var uiConfig = {
           signInFlow: 'popup',
           signInOptions: [
@@ -56,7 +56,7 @@ class Mixify {
         this.ingredientMultiplier = 1;
         this.ingredientUnit = "Metric";
         Object.freeze(this.cocktailDb);
-        /* 
+        /*
             this.cocktailDb = {
                 cocktails: [
                     0: {
@@ -70,7 +70,7 @@ class Mixify {
                 ]
             }
         */
-        
+
         this.checkAge().then((hideAlcoholic) => {
           this.defaultCocktails = Object.values(this.cocktailDb.cocktails);
           if (hideAlcoholic) {
@@ -142,29 +142,10 @@ class Mixify {
         $('input[type="text"]').on('beforeItemAdd', (event) => {
             // Cancel the item add if the ingredient the user is trying to add
             // does not exists in our ingredient database.
-            event.cancel = this.cocktailDb.ingredients.indexOf(event.item.replace(/\!/g, '')) == -1;
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
         });
 
-        let tagInputChangeEventHandler = (event) => {
-            if (event.tag !== undefined) {
-              // Item is added
-              $(event.tag).click((tagClick) => {
-                console.log(tagClick);
-                // When a tag is clicked, let's negate that tag
-                // so that the search doesn't include that tag.
-                if (event.item[0] == "!") {
-                  this.searchIngredients.remove(event.item);
-                  this.searchIngredients.add(`${event.item.substr(1)}`);
-                } else {
-                  this.searchIngredients.remove(event.item);
-                  this.searchIngredients.add(`!${event.item}`);
-                }
-              }).children().on("click", (e) => {
-                e.stopPropagation();
-                this.searchIngredients.remove(event.item);
-              });
-            }
-
+        let tagInputChangeEventHandler = () => {
             this.filterCards();
             this.sortCards();
             this.nextPage(1);
@@ -213,15 +194,8 @@ class Mixify {
             });
         } else {
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
-              // Remove any cocktails that include negated ingredients
-              let includesNegated = false;
-              Object.keys(cocktail.ingredients).forEach((ingr) => {
-                if (negatedIngredients.indexOf(ingr.toLowerCase()) != -1) includesNegated = true;
-              });
-              return !includesNegated;
-            }).filter((cocktail) => {
                 if (this.isNonAlcoholic(cocktail) === false && this.hideAlcoholic) return false;
-                return selectedIngredients.some((ingredient) => 
+                return selectedIngredients.some((ingredient) =>
                                                  Object.keys(cocktail.ingredients).map((ingr) => ingr.toLowerCase()).includes(ingredient));
             }).filter((cocktail) => {
               if (!this.loggedIn) return true;
@@ -233,31 +207,24 @@ class Mixify {
     }
 
     sortCards() {
-        let arrayDiff = (a, b) => {
-          return [
-              ...a.filter(x => b.indexOf(x) === -1),
-              ...b.filter(x => a.indexOf(x) === -1)
-          ];
-        }
-
         const numIngredientsRequired = (cocktail) => {
           let ingredientList = Object.keys(cocktail.ingredients).map((val) => val.toLowerCase());
-          let selectedList = this.selectedIngredients.map((val) => val.toLowerCase()).filter((ingr) => ingr[0] != "!");
-
-          const diff = arrayDiff(ingredientList, selectedList);
-
-          return diff.length;
+          let count = ingredientList.length;
+          this.selectedIngredients.map((val) => val.toLowerCase()).forEach((ingredient) => {
+            if (ingredientList.indexOf(ingredient) != -1) count--;
+          });
+          return count;
         };
 
         this.filteredCocktails = this.filteredCocktails.sort((cocktailA, cocktailB) => {
-          let countA = numIngredientsRequired(cocktailA); 
-          let countB = numIngredientsRequired(cocktailB); 
+          let countA = numIngredientsRequired(cocktailA);
+          let countB = numIngredientsRequired(cocktailB);
           if (countA > countB) return 1;
           if (countA < countB) return -1;
           return 0;
         });
     }
-    
+
     // Generates list of cards
     generateCards() {
         this.outputH = [];
@@ -272,19 +239,14 @@ class Mixify {
         } else if (this.start >= this.filteredCocktails.length) {
           this.start -= this.displayNum;
         }
-        console.log(this.filteredCocktails)
-        console.log(this.start)
-        console.log(this.end)
         for(let i = this.start; i < this.end; i++) {
           let cocktailData = this.filteredCocktails[i];
             let outputHtml = ``;
             let ingredientHtml = ``;
-           
+
             const hasIngredient = (name) => {
               return this.selectedIngredients.indexOf(name.toLowerCase()) != -1;
             };
-
-            if (cocktailData == undefined) continue;
 
             let cocktailIngredients = Object.keys(cocktailData.ingredients).sort((a, b) => {
               if (hasIngredient(a) && !hasIngredient(b)) return -1;
@@ -294,8 +256,10 @@ class Mixify {
 
             cocktailIngredients.forEach((key) => {
                 let hasIngredientClass = (hasIngredient(key) ? "success" : "primary");
-                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1">${key}</span>`;
+                ingredientHtml += `<span class="badge badge-${hasIngredientClass} m-1" id="tagButton">${key}</span>`
             });
+
+
             let alcoholClass = 0;
             if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
                 alcoholClass = "warning";
@@ -324,16 +288,15 @@ class Mixify {
 
           this.outputH.push(outputHtml);
         }
-        
+
     }
 
     displayCards() {
         let displayHtml = this.outputH[0];
 
-        for(let i = 1; i < this.outputH.length; i++) {
-          displayHtml += this.outputH[i];
-        }
-        
+        for(let i = 2; i < this.outputH.length; i++)
+            displayHtml += this.outputH[i];
+        displayHtml +=this.outputH[1];
         $("#cocktailAlbum").html(displayHtml);
         let ChangeModalHndler = (b) => {
           this.displayModal(b);
@@ -348,6 +311,35 @@ class Mixify {
         $(".fa-heart").click((event) => {
           this.toggleFavorite($(event.target).attr('id').replace('fav-', ''));
         });
+
+        $(".badge-primary").click(function() {
+          var key = $("#tagButton").text();
+
+          var ingredientName = key;
+          this.searchIngredients = $('input').tagsinput({
+              typeaheadjs: {
+              source: ingredientName
+             }
+          })[0];
+         this.searchIngredients.add(ingredientName);
+
+         $('input').on('beforeItemAdd', (event) => {
+            // Cancel the item add if the ingredient the user is trying to add
+            // does not exists in our ingredient database.
+            event.cancel = this.cocktailDb.ingredients.indexOf(event.item) == -1;
+         });
+
+         let tagInputChangeEventHandler = () => {
+             this.filterCards();
+             this.sortCards();
+             this.nextPage(1);
+             this.generateCards();
+             this.displayCards();
+         }
+
+         $('input').on('itemAdded', tagInputChangeEventHandler);
+         $('input').on('itemRemoved', tagInputChangeEventHandler);
+      });
     }
     nextPage(pgNum){
       //calculates the max page number
@@ -375,7 +367,7 @@ class Mixify {
       //sets the values for displayCards to use
         this.end = this.displayNum*this.pgNum1;
         this.start = this.end - this.displayNum;
-        
+
         this.generateCards();
         this.displayCards();
         this.changePagination();
@@ -429,9 +421,9 @@ class Mixify {
         ChangePageHndler(b);
       });
     }
-    displayModal(mid){ 
+    displayModal(mid){
       this.ingredientMultiplier = 1;
-      let cocktailData = this.filteredCocktails[mid];     
+      let cocktailData = this.filteredCocktails[mid];
       let alcoholClass = 0;
       if (cocktailData.alcoholic && cocktailData.alcoholic.indexOf('Optional') != -1) {
         alcoholClass = "warning";
@@ -463,7 +455,7 @@ class Mixify {
          outputModal += `</h5>
                     </div>
                     <div class="col-1 mr-3">
-                        
+
                     </div>
                     <div class="col-1">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -482,7 +474,7 @@ class Mixify {
                       <div class="col">
                       <div class="btn-group float-right">
                       <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Quantity: <span id="quanNum" class="mr-1 ml-1">${this.ingredientMultiplier}</span>  
+                      Quantity: <span id="quanNum" class="mr-1 ml-1">${this.ingredientMultiplier}</span>
                       <span class="sr-only">Toggle Dropdown</span>
                       </button>
                       <div class="dropdown-menu scrollable-menu w-1">
@@ -508,8 +500,8 @@ class Mixify {
           $("#displayModal1").html(outputModal);
           this.ingredientsManipulations(cocktailData);
           let ChangePageHndler = (b) => {
-            this.ingredientMultiplier =b;   
-            this.ingredientsManipulations(cocktailData);     
+            this.ingredientMultiplier =b;
+            this.ingredientsManipulations(cocktailData);
           }
           $(".num").click(function(){
             let b = $(this).text();
@@ -523,13 +515,13 @@ class Mixify {
               let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
               let newUnits;
               let displayIngr = ` `;
-              if(cocktailData.ingredients[key]){ 
+              if(cocktailData.ingredients[key]){
                 newUnits = cocktailData.ingredients[key].split(" ");
                 newUnits.forEach((ing) => {
-                  if(!isNaN(ing)) { 
+                  if(!isNaN(ing)) {
                     ing *= this.ingredientMultiplier;
                   } else if (ing == `½`) {
-                    //ing = (1*this.ingredientMultiplier)+`/`+2; 
+                    //ing = (1*this.ingredientMultiplier)+`/`+2;
                     let wNum = math.divide(1*this.ingredientMultiplier, 2);
                     wNum = math.floor(wNum);
                     if(wNum == 0){
@@ -562,7 +554,7 @@ class Mixify {
                   displayIngr += ing;
                   displayIngr += ` `;
                 });
-              }             
+              }
               ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
             });
             ingredientsModal += `</ul>`;
@@ -583,8 +575,8 @@ class Mixify {
             this.hideAlcoholic = !ofAge;
             $("#ageModal").modal('hide');
             resolve(this.hideAlcoholic);
-          };
-  
+          };p
+
           $("#over21").click(() => ageResponse(true));
           $("#under21").click(() => ageResponse(false));
         });
@@ -594,7 +586,7 @@ class Mixify {
 
 $(document).ready(() => {
     console.log("Loading Mixify...");
-    
+
     $.getJSON("cocktails.json", (data) => {
         const mix = new Mixify(data);
         document.mixify = mix;
