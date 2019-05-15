@@ -553,7 +553,18 @@ class Mixify {
               let displayIngr = ` `;
               if(cocktailData.ingredients[key]){ 
                 newUnits = cocktailData.ingredients[key].split(" ");
-                newUnits.forEach((ing) => {
+                for(let s = 0; s < newUnits.length;++s) {
+                  console.log(newUnits);
+                  let ing = newUnits[s];
+                  let temp = 0;
+                  if(newUnits.length > s+1) {
+                    if(newUnits[s+1].includes("/")) {
+                      //console.log("passed here");
+                      temp = newUnits[s];
+                      ing = newUnits[s+1];
+                      s+= 1;
+                    }
+                  }
                   if(!isNaN(ing)) { 
                     ing *= this.ingredientMultiplier;
                   } else if (ing == `½`) {
@@ -574,6 +585,10 @@ class Mixify {
                     ing1[0] *= this.ingredientMultiplier;
                     let wNum = math.divide(ing1[0], ing1[1]);
                     wNum = math.floor(wNum);
+                    console.log("temp = ", temp);
+                    console.log("wNum = ", wNum);
+                    wNum += math.add(temp, wNum);
+                    console.log("wNum = ", wNum);
                     if(wNum == 0){
                       wNum = ` `;
                     }
@@ -589,7 +604,10 @@ class Mixify {
                   }
                   displayIngr += ing;
                   displayIngr += ` `;
-                });
+                }
+                // newUnits.forEach((ing) => {
+                  
+                // });
               }             
               ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
             });
