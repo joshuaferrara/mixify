@@ -196,13 +196,14 @@ class Mixify {
 
     filterCards() {
         const selectedIngredients = this.selectedIngredients;
-        const negatedIngredients = selectedIngredients.filter((ingr) => ingr[0] == "!").map((ingr) => ingr.substr(1));
-        if (selectedIngredients.length == 0 || (negatedIngredients.length != 0 && selectedIngredients == 0) || (selectedIngredients.length == negatedIngredients.length)) {
+        const negatedIngredients = selectedIngredients.filter((ingr) => ingr[0] == "!").map((ingr) => ingr.substr(1).toLowerCase());
+        if (selectedIngredients.length - negatedIngredients.length <= 0) {
+          console.log('a')
             this.filteredCocktails = this.defaultCocktails.slice().filter((cocktail) => {
               // Remove any cocktails that include negated ingredients
               let includesNegated = false;
               Object.keys(cocktail.ingredients).forEach((ingr) => {
-                if (negatedIngredients.indexOf(ingr) != -1) includesNegated = true;
+                if (negatedIngredients.indexOf(ingr.toLowerCase()) != -1) includesNegated = true;
               });
               return !includesNegated;
             }).filter((cocktail) => {
@@ -212,6 +213,7 @@ class Mixify {
               return true;
             });
         } else {
+          console.log('b')
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
               // Remove any cocktails that include negated ingredients
               let includesNegated = false;
