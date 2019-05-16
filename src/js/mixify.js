@@ -55,6 +55,8 @@ class Mixify {
         this.end = this.start + this.displayNum;
         this.ingredientMultiplier = 1;
         this.ingredientUnit = "Metric";
+
+        
         Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
@@ -312,7 +314,7 @@ class Mixify {
             //       the alcoholic property to a question mark or
             //       something.
 
-            outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
+            outputHtml += `<div class="card mb-4 mt-2 flex-fill shadow" id="${i}">
             <i class="${this.isFavorite(cocktailData.id) ? 'fas' : 'far'} fa-heart" id="fav-${cocktailData.id}"></i>
             <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
