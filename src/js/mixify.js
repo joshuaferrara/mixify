@@ -237,6 +237,7 @@ class Mixify {
     }
 
     sortCards() {
+        // https://stackoverflow.com/a/52430020/826371
         let arrayDiff = (a, b) => {
           return [
               ...a.filter(x => b.indexOf(x) === -1),
