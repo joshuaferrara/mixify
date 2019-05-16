@@ -126,6 +126,9 @@ title, p, h1, .text-muted {
     margin-left: -20px;
     margin-right: 10px;
 }
+hr {
+    border-top: 1px dotted white;
+}
 a .page-link {
     border: none;
 }

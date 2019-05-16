@@ -487,7 +487,6 @@ class Mixify {
                 </div>
                 </div>
                 <div class="modal-body">
-                  <div class="container">
                     <div class="row">
                       <div class="col">
                           <img class="bd-placeholder-img card-img-top" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
@@ -505,15 +504,10 @@ class Mixify {
                         <h5>List of ingredients: </h5>
                         <div id="ingredients">
                         </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col pt-2">
                         <h5>Instructions:</h5>
                         ${cocktailData.instructions}
                       </div>
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
