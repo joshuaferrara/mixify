@@ -118,6 +118,14 @@ title, p, h1, .text-muted {
   background: #595183;
   color: white;
 }
+.ingredients ul {
+    list-style: none;
+} 
+.ingredients li:before {
+    content: '✅';
+    margin-left: -20px;
+    margin-right: 10px;
+}
 a .page-link {
     border: none;
 }

@@ -531,7 +531,7 @@ class Mixify {
     }
     ingredientsManipulations(cocktailData){
       $("#quanNum").html(this.ingredientMultiplier);
-      let ingredientsModal = `<ul>`;
+      let ingredientsModal = `<div class="ingredients"><ul>`;
             Object.keys(cocktailData.ingredients).forEach((key) => {
               let hasIngredientClass = (this.selectedIngredients.indexOf(key.toLowerCase()) != -1 ? "success" : "primary");
               let newUnits;
@@ -596,7 +596,7 @@ class Mixify {
               }             
               ingredientsModal += `<li class="">${key}: ${displayIngr}</li>`;
             });
-            ingredientsModal += `</ul>`;
+            ingredientsModal += `</div></ul>`;
             $("#ingredients").html(ingredientsModal);
     }
     checkAge() {
