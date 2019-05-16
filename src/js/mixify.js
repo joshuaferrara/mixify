@@ -312,7 +312,7 @@ class Mixify {
 
             outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
             <i class="${this.isFavorite(cocktailData.id) ? 'fas' : 'far'} fa-heart" id="fav-${cocktailData.id}"></i>
-            <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${cocktailData.id}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
             <div class="card-body" data.drinkid="${i}">
             <p>${cocktailData.name}</p>
