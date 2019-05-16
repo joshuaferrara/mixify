@@ -554,12 +554,12 @@ class Mixify {
               if(cocktailData.ingredients[key]){ 
                 newUnits = cocktailData.ingredients[key].split(" ");
                 for(let s = 0; s < newUnits.length;++s) {
-                   console.log(newUnits);
+                  //  console.log(newUnits);
                   let ing = newUnits[s];
                   let temp = 0;
                   if(newUnits.length > s+1 && !isNaN(ing)) {
                     if(newUnits[s+1].includes("/")) {
-                      console.log("passed here");
+                      // console.log("passed here");
                       temp = newUnits[s]* this.ingredientMultiplier;
                       ing = newUnits[s+1];
                       s+= 1;
@@ -585,10 +585,10 @@ class Mixify {
                     ing1[0] *= this.ingredientMultiplier;
                     let wNum = math.divide(ing1[0], ing1[1]);
                     wNum = math.floor(wNum);
-                    console.log("temp = ", temp);
-                    console.log("wNum = ", wNum);
+                    // console.log("temp = ", temp);
+                    // console.log("wNum = ", wNum);
                     wNum = math.add(temp, wNum);
-                    console.log("wNum = ", wNum);
+                    // console.log("wNum = ", wNum);
                     if(wNum == 0){
                       wNum = ` `;
                     }
