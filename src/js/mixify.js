@@ -55,6 +55,8 @@ class Mixify {
         this.end = this.start + this.displayNum;
         this.ingredientMultiplier = 1;
         this.ingredientUnit = "Metric";
+
+        
         Object.freeze(this.cocktailDb);
         /* 
             this.cocktailDb = {
@@ -196,13 +198,14 @@ class Mixify {
 
     filterCards() {
         const selectedIngredients = this.selectedIngredients;
-        const negatedIngredients = selectedIngredients.filter((ingr) => ingr[0] == "!").map((ingr) => ingr.substr(1));
-        if (selectedIngredients.length == 0 || (negatedIngredients.length != 0 && selectedIngredients == 0) || (selectedIngredients.length == negatedIngredients.length)) {
+        const negatedIngredients = selectedIngredients.filter((ingr) => ingr[0] == "!").map((ingr) => ingr.substr(1).toLowerCase());
+        if (selectedIngredients.length - negatedIngredients.length <= 0) {
+          console.log('a')
             this.filteredCocktails = this.defaultCocktails.slice().filter((cocktail) => {
               // Remove any cocktails that include negated ingredients
               let includesNegated = false;
               Object.keys(cocktail.ingredients).forEach((ingr) => {
-                if (negatedIngredients.indexOf(ingr) != -1) includesNegated = true;
+                if (negatedIngredients.indexOf(ingr.toLowerCase()) != -1) includesNegated = true;
               });
               return !includesNegated;
             }).filter((cocktail) => {
@@ -212,6 +215,7 @@ class Mixify {
               return true;
             });
         } else {
+          console.log('b')
             this.filteredCocktails = Object.values(this.cocktailDb.cocktails).filter((cocktail) => {
               // Remove any cocktails that include negated ingredients
               let includesNegated = false;
@@ -310,7 +314,7 @@ class Mixify {
             //       the alcoholic property to a question mark or
             //       something.
 
-            outputHtml += `<div class="card mb-4 flex-fill shadow" id="${i}">
+            outputHtml += `<div class="card mb-4 mt-2 flex-fill shadow" id="${i}">
             <i class="${this.isFavorite(cocktailData.id) ? 'fas' : 'far'} fa-heart" id="fav-${cocktailData.id}"></i>
             <img class="bd-placeholder-img card-img-top flex-fill" data.drinkid="${i}" src="${cocktailData.thumbnail}" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             ${alcoholClass == 0 ? `<span class="badge badge-secondary alcoholic-tag">Unknown</span>` : `<span class="badge badge-${alcoholClass} alcoholic-tag">${cocktailData.alcoholic}</span>`}
